@@ -1,5 +1,13 @@
 # Booking System
 
+## Design 
+
+**Frontend:** React.js to create dynamic, responsive user interfaces.
+**Backend:** Next.js with Node.js for server-side rendering.
+**MVP Architecture:** MVP (Model-View-Presenter) pattern for front- and backend logic.
+**Database Access:** DAO (Data Access Object) pattern for database interactions, to ensure separation from MVP (Model-View-Presenter) layers.
+Views: React components.
+
 ## Structure Diagram
 
 ```
@@ -8,15 +16,15 @@ bookingsystem/
 ├── node_modules/            # Contains all the node modules that your project depends on.
 ├── public/                  # Static assets like images, icons, and any public resources.
 │   ├── favicon.ico
-│   ├── next.svg
-│   ├── vercel.svg
-│   └── ...
 ├── src/
-│   ├── components/          # Reusable React components (the 'View' in MVP).
+│   ├── app/                 # Special directory for Next.js pages and routing (View Layer).
+│   └──globals.css           # Global CSS
+│   └──page.js               # The entry point for application's homepage.
+│   └──layout.js             # Shared UI for a segment and its children. Can be good for global navbars or footers.
+│   ├── components/          # Reusable React components (for the 'View' in MVP).
 │   ├── models/              # 'Model' in MVP, contains business logic and state management.
 │   ├── presenters/          # 'Presenter' in MVP, acts as an intermediary between View and Model.
 │   └── dao/                 # Data Access Object layer for abstracting and encapsulating all access to the data source.
-├── pages/                   # Special directory for Next.js pages and routing.
 ├── .eslintrc.json           # ESLint configuration for code linting.
 ├── .gitignore               # Specifies files to be ignored by version control.
 ├── jsconfig.json            # Configures project settings for Visual Studio Code.
