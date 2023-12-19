@@ -18,7 +18,9 @@ bookingsystem/
 │   ├── favicon.ico
 ├── src/
 │   ├── app/                 # Special directory for Next.js pages and routing (View Layer).
-│   └──globals.css           # Global CSS
+│   │   ├── page.js          # The entry point for application's homepage.
+│   │   └── layout.js        # Shared UI for a segment and its children. Can be good for global navbars or footers.
+│   ├── globals.css          # Global CSS
 │   └──page.js               # The entry point for application's homepage.
 │   └──layout.js             # Shared UI for a segment and its children. Can be good for global navbars or footers.
 │   ├── components/          # Reusable React components (for the 'View' in MVP).
