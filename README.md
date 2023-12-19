@@ -2,8 +2,8 @@
 
 ## Structure Diagram
 
+```
 bookingsystem/
-your-app-name/
 ├── .next/                   # Auto-generated build directory by Next.js.
 ├── node_modules/            # Contains all the node modules that your project depends on.
 ├── public/                  # Static assets like images, icons, and any public resources.
@@ -26,6 +26,16 @@ your-app-name/
 ├── postcss.config.js        # Configuration for PostCSS processing of CSS.
 ├── README.md                # Project documentation and description.
 └── tailwind.config.js       # Configuration for the Tailwind CSS framework.
+```
+
+### Descriptions for Each Layer:
+
+- **components/**: Holds the React components that are used to build the user interface. Each component should be responsible for rendering the application's UI and handling user interactions.
+- **models/**: Contains the application's business logic, data structures, and functions. It is responsible for managing the application's data and state without concern for user interface or presentation logic.
+- **presenters/**: Functions as the coordinator between the `components` (View) and `models`. It retrieves data from the `models`, and formats it for display in the `components`.
+- **dao/**: Encapsulates all interaction with the data source. It provides a clear API for accessing and manipulating data, allowing for flexibility in changing the data source without affecting the rest of the application.
+- **pages/**: In Next.js, each page corresponds to a route and is responsible for rendering the components that make up the complete page. This directory usually doesn't have complex logic and often uses presenters to fetch and prepare data.
+
 
 
 ## ERD
