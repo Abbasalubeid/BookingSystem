@@ -5,8 +5,6 @@
 **Frontend:** React.js to create dynamic, responsive user interfaces.
 **Backend:** Next.js with Node.js for server-side rendering.
 **MVP Architecture:** MVP (Model-View-Presenter) pattern for front- and backend logic.
-**Database Access:** DAO (Data Access Object) pattern for database interactions, to ensure separation from MVP (Model-View-Presenter) layers.
-Views: React components.
 
 ## Structure Diagram
 
