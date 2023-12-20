@@ -1,3 +1,10 @@
+--DROP TABLE IF EXISTS feedback;
+--DROP TABLE IF EXISTS reservations;
+--DROP TABLE IF EXISTS lists;
+--DROP TABLE IF EXISTS access;
+--DROP TABLE IF EXISTS courses;
+--DROP TABLE IF EXISTS users;
+
 -- Table creation for 'users'
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
@@ -25,7 +32,6 @@ CREATE TABLE lists (
     id SERIAL PRIMARY KEY,
     course_id INTEGER NOT NULL REFERENCES courses(id),
     admin_id INTEGER NOT NULL REFERENCES users(id),
-    reservation_id INTEGER NOT NULL REFERENCES reservation(id),  
     description VARCHAR(64) NOT NULL,
     location VARCHAR(64) NOT NULL,
     start TIMESTAMP NOT NULL,
@@ -47,7 +53,7 @@ CREATE TABLE feedback (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL REFERENCES users(id),
     course_id INTEGER NOT NULL REFERENCES courses(id),
-    comment VARCHAR(64) NOT NULL,
+    comment TEXT NOT NULL,
     rating INTEGER NOT NULL,
     time TIMESTAMP NOT NULL
 );
