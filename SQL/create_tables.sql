@@ -1,3 +1,10 @@
+--DROP TABLE IF EXISTS feedback;
+--DROP TABLE IF EXISTS reservations;
+--DROP TABLE IF EXISTS lists;
+--DROP TABLE IF EXISTS access;
+--DROP TABLE IF EXISTS courses;
+--DROP TABLE IF EXISTS users;
+
 -- Table creation for 'users'
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
