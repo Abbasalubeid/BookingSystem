@@ -43,7 +43,7 @@ bookingsystem/
 - **components/**: Holds the React components that are used to build the user interface. Each component should be responsible for rendering the application's UI and handling user interactions.
 - **models/**: Contains the application's business logic, data structures, and functions. It is responsible for managing the application's data and state without concern for user interface or presentation logic.
 - **presenters/**: Functions as the coordinator between the `components` (View) and `models`. It retrieves data from the `models`, and formats it for display in the `components`.
-- **dao/**: Encapsulates all interaction with the data source. It provides a clear API for accessing and manipulating data, allowing for flexibility in changing the data source without affecting the rest of the application.
+- **api/**: Encapsulates all interaction with the data source. It provides a clear API for accessing and manipulating data, allowing for flexibility in changing the data source without affecting the rest of the application.
 - **pages/**: In Next.js, each page corresponds to a route and is responsible for rendering the components that make up the complete page. This directory usually doesn't have complex logic and often uses presenters to fetch and prepare data.
 
 
