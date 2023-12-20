@@ -17,16 +17,16 @@ bookingsystem/
 ├── public/                  # Static assets like images, icons, and any public resources.
 │   ├── favicon.ico
 ├── src/
-│   ├── app/                 # Special directory for Next.js pages and routing (View Layer).
+│   ├── app/                 # Special directory for Next.js page routing, API endpoints and more.
 │   │   ├── page.js          # The entry point for application's homepage.
 │   │   └── layout.js        # Shared UI for a segment and its children. Can be good for global navbars or footers.
 │   ├── globals.css          # Global CSS
 │   └──page.js               # The entry point for application's homepage.
 │   └──layout.js             # Shared UI for a segment and its children. Can be good for global navbars or footers.
 │   ├── components/          # Reusable React components (for the 'View' in MVP).
+│   ├── views/               # The UI. Using one or more components from components/
 │   ├── models/              # 'Model' in MVP, contains business logic and state management.
 │   ├── presenters/          # 'Presenter' in MVP, acts as an intermediary between View and Model.
-│   └── dao/                 # Data Access Object layer for abstracting and encapsulating all access to the data source.
 ├── .eslintrc.json           # ESLint configuration for code linting.
 ├── .gitignore               # Specifies files to be ignored by version control.
 ├── jsconfig.json            # Configures project settings for Visual Studio Code.
