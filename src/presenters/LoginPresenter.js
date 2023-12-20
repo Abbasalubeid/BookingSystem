@@ -1,5 +1,5 @@
 import React from 'react';
-import LoginForm from '../components/LoginForm';
+import LoginView from '../views/LoginView';
 import { User } from '../models/User';
 
 
@@ -16,7 +16,6 @@ const LoginPresenter = () => {
       });
 
       if (response.ok) {
-
         const userData = await response.json();
         const user = new User(userData.id, userData.username, userData.admin);
         console.log(user.greet());
@@ -28,7 +27,7 @@ const LoginPresenter = () => {
     }
   };
 
-  return <LoginForm onLogin={handleLogin} />;
+  return <LoginView onLogin={handleLogin} />;
 };
 
 export default LoginPresenter;
