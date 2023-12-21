@@ -45,7 +45,7 @@ const LoginView = ({ onLogin }) => {
               <Input 
                 id="email" 
                 // type="email" 
-                placeholder="m@example.com" 
+                placeholder="johnDoe@example.com" 
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
