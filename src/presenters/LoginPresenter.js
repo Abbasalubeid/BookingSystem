@@ -7,7 +7,7 @@ const LoginPresenter = () => {
 
   const handleLogin = async (username, password) => {
     try {
-      const response = await fetch('/api/login', {
+      const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -16,13 +16,16 @@ const LoginPresenter = () => {
       });
 
       if (response.ok) {
-        const userData = await response.json();
+        const { user: userData } = await response.json();
+        // Create a User instance with the returned data
         const user = new User(userData.id, userData.username, userData.admin);
         console.log(user.greet());
       } else {
+        // TODO: Show login Failed in UI
         console.error('Login failed');
       }
     } catch (error) {
+      // TODO: Show login Failed in UI
       console.error('Login error:', error);
     }
   };
