@@ -1,5 +1,3 @@
-// presenters/CoursesPresenter.js
-
 import React, { useState, useEffect } from 'react';
 import CoursesView from '@/views/CoursesView';
 import Course from '../models/Course';
