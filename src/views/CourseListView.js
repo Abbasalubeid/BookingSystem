@@ -8,36 +8,50 @@ import {
   TableRow,
   TableHead,
 } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
 
-const CourseListView = ({ lists, error }) => {
+const CourseListView = ({ listData, error }) => {
   if (error) {
-    return <div>Error: {error}</div>;
+    return <div className="text-red-600 font-bold p-3">Error: {error}</div>;
   }
 
+  const courseTitle = listData.length > 0 ? listData[0].courseTitle : 'Course Sessions';
+
   return (
+    <>
     <Table>
-      <TableCaption>List of Course Sessions</TableCaption>
+      
+      <TableCaption>{courseTitle}</TableCaption>
       <TableHeader>
         <TableRow>
           <TableHead>Description</TableHead>
           <TableHead>Location</TableHead>
           <TableHead>Start Time</TableHead>
           <TableHead>Duration (min)</TableHead>
-          <TableHead>Max Slots</TableHead>
+          <TableHead>Reservation slots</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {lists.map(list => (
+        {listData.map(list => (
           <TableRow key={list.id}>
             <TableCell>{list.description}</TableCell>
             <TableCell>{list.location}</TableCell>
-            <TableCell>{list.formatStartTime()}</TableCell>
-            <TableCell>{list.interval}</TableCell>
-            <TableCell>{list.maxSlots}</TableCell>
+            <TableCell>{list.startTime}</TableCell>
+            <TableCell>{list.duration}</TableCell>
+            <TableCell className="relative">
+            <p className="hidden md:inline md:w-1/2">{list.maxSlots}</p>
+                            <div className="absolute bottom-1 right-3">
+                                <Badge variant={list.isFull ? "destructive" : "available"}  
+                                size="sm:small md:normal">
+                                    {list.isFull ? "Full" : `${list.availableSlots} Available `}
+                                </Badge>
+                            </div>
+                        </TableCell>
           </TableRow>
         ))}
       </TableBody>
     </Table>
+    </>
   );
 };
 
