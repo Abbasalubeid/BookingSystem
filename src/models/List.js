@@ -1,4 +1,4 @@
-// src/app/models/List.js
+import Reservation from './Reservation';
 export default class List {
     constructor(data) {
       this.id = data.id;
@@ -9,12 +9,19 @@ export default class List {
       this.start = new Date(data.start);
       this.interval = data.interval;
       this.maxSlots = data.max_slots;
+      this.courseTitle = data.course_title;
+      this.reservations = data.reservations ? data.reservations.map(r => new Reservation(r)) : [];
     }
-  
-    // Add any methods that are relevant for a List
+
     formatStartTime() {
-      // Example method to format the start time
-      return this.start.toLocaleString();
+      return `${this.start.toLocaleDateString()} ${this.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
     }
-  }
-  
+
+    getAvailableSlots() {
+      return this.maxSlots - this.reservations.length;
+    }
+
+    isFull() {
+      return this.getAvailableSlots() === 0;
+    }
+}
