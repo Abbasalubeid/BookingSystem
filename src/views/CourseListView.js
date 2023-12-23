@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import {
   Table,
   TableBody,
@@ -9,48 +10,79 @@ import {
   TableHead,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { ExclamationTriangleIcon, ArrowLeftIcon } from "@radix-ui/react-icons";
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@/components/ui/alert";
 
 const CourseListView = ({ listData, error }) => {
   if (error) {
-    return <div className="text-red-600 font-bold p-3">Error: {error}</div>;
+    return (
+      <Alert variant="destructive">
+        <ExclamationTriangleIcon className="h-4 w-4" />
+        <AlertTitle>Error</AlertTitle>
+        <AlertDescription>{error}</AlertDescription>
+      </Alert>
+    );
+  }
+
+  if (listData.length === 0) {
+    return (
+      <div className="text-center p-2">
+        <Alert variant="destructive">
+        <ExclamationTriangleIcon className="h-4 w-4" />
+          <AlertTitle>No Lists Available</AlertTitle>
+          <AlertDescription>
+            This course has no lists yet.
+          </AlertDescription>
+        </Alert>
+        <Link href="/courses">
+          <Button variant="destructive" className="mt-4">
+            <ArrowLeftIcon />
+            Back to Courses
+          </Button>
+        </Link>
+      </div>
+    );
   }
 
   const courseTitle = listData.length > 0 ? listData[0].courseTitle : 'Course Sessions';
 
   return (
     <>
-    <Table>
-      
-      <TableCaption>{courseTitle}</TableCaption>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Description</TableHead>
-          <TableHead>Location</TableHead>
-          <TableHead>Start Time</TableHead>
-          <TableHead>Duration (min)</TableHead>
-          <TableHead>Reservation slots</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {listData.map(list => (
-          <TableRow key={list.id}>
-            <TableCell>{list.description}</TableCell>
-            <TableCell>{list.location}</TableCell>
-            <TableCell>{list.startTime}</TableCell>
-            <TableCell>{list.duration}</TableCell>
-            <TableCell className="relative">
-            <p className="hidden md:inline md:w-1/2">{list.maxSlots}</p>
-                            <div className="absolute bottom-1 right-3">
-                                <Badge variant={list.isFull ? "destructive" : "available"}  
-                                size="sm:small md:normal">
-                                    {list.isFull ? "Full" : `${list.availableSlots} Available `}
-                                </Badge>
-                            </div>
-                        </TableCell>
+      <Table>
+        <TableCaption>{courseTitle}</TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Description</TableHead>
+            <TableHead>Location</TableHead>
+            <TableHead>Start Time</TableHead>
+            <TableHead>Duration (min)</TableHead>
+            <TableHead>Reservation slots</TableHead>
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+        </TableHeader>
+        <TableBody>
+          {listData.map(list => (
+            <TableRow key={list.id}>
+              <TableCell>{list.description}</TableCell>
+              <TableCell>{list.location}</TableCell>
+              <TableCell>{list.startTime}</TableCell>
+              <TableCell>{list.duration}</TableCell>
+              <TableCell className="relative">
+                <p className="hidden md:inline md:w-1/2">{list.maxSlots}</p>
+                <div className="absolute bottom-1 right-3">
+                  <Badge variant={list.isFull ? "destructive" : "available"} size="sm:small md:normal">
+                    {list.isFull ? "Full" : `${list.availableSlots} Available `}
+                  </Badge>
+                </div>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </>
   );
 };
