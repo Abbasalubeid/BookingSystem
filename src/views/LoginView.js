@@ -10,6 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import Link from 'next/link';
 
 const LoginView = ({ onLogin }) => {
   const [email, setEmail] = useState("");
@@ -52,9 +53,11 @@ const LoginView = ({ onLogin }) => {
             </div>
           </CardContent>
           <CardFooter>
-            <Button type="submit" className="w-full">
+          <Link href={`/courses`} passHref>
+          <Button type="submit" className="w-full">
               Log in
             </Button>
+        </Link>
           </CardFooter>
         </form>
       </Card>
