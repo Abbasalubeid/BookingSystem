@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from "react";
 import LoginView from '../views/LoginView';
 import { User } from '../models/User';
 
 
 const LoginPresenter = () => {
+  const [isLoginSuccess, setIsLoginSuccess] = useState(false);
 
   const handleLogin = async (username, password) => {
     try {
@@ -20,6 +21,7 @@ const LoginPresenter = () => {
         // Create a User instance with the returned data
         const user = new User(userData.id, userData.username, userData.admin);
         console.log(user.greet());
+        setIsLoginSuccess(true);
       } else {
         // TODO: Show login Failed in UI
         console.error('Login failed');
@@ -30,7 +32,7 @@ const LoginPresenter = () => {
     }
   };
 
-  return <LoginView onLogin={handleLogin} />;
+  return <LoginView onLogin={handleLogin} isLoginSuccess={isLoginSuccess} />;
 };
 
 export default LoginPresenter;

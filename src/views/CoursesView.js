@@ -17,9 +17,9 @@ const CoursesView = ({ courses = [] }) => {
         </Link>
       )) : (
         <Card>
-          <CardContent>
-            <p>No courses available.</p>
-          </CardContent>
+          <CardHeader>
+            <CardTitle className="text-lg">No courses available</CardTitle>
+          </CardHeader>
         </Card>
       )}
       <Separator className="my-4" />

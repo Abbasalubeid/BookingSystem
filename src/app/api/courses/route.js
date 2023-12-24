@@ -13,7 +13,6 @@ export async function GET(request) {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const userId = decoded.userId; 
-    console.log("userId: " + userId);
 
     // Fetch courses for the user
     const coursesQuery = await sql`
