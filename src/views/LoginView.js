@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -10,11 +10,18 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import Link from 'next/link';
+import { useRouter } from 'next/navigation'
 
-const LoginView = ({ onLogin }) => {
+const LoginView = ({ onLogin, isLoginSuccess }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isLoginSuccess) {
+      router.push('/courses');
+    }
+  }, [isLoginSuccess, router]);
 
   const handleFormSubmit = (event) => {
     event.preventDefault();
@@ -53,11 +60,10 @@ const LoginView = ({ onLogin }) => {
             </div>
           </CardContent>
           <CardFooter>
-          <Link href={`/courses`} passHref>
           <Button type="submit" className="w-full">
               Log in
-            </Button>
-        </Link>
+            </Button> 
+            {isLoginSuccess && <p className="text-green-500">Login successful!</p>}
           </CardFooter>
         </form>
       </Card>
