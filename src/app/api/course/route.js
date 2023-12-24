@@ -1,4 +1,3 @@
-// src/app/api/course.js
 import { sql } from "@vercel/postgres";
 
 export async function GET(request) {
