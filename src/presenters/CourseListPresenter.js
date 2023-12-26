@@ -89,28 +89,35 @@ const CourseListPresenter = ({ id }) => {
     if (!userId) {
       setBookingConfirmation(`Log in to create a booking!`);
       setIsBooking(false);
-        return;
+      return;
     }
-
+  
     const listModel = listModelsMap[currentList.id];
-    const existingBookingTime = listModel.userHasBooking(userId);
+    let existingBookingTime = listModel.userHasBooking(userId);
     if (existingBookingTime) {
       setBookingConfirmation(`You already have a booking at ${existingBookingTime}`);
       setIsBooking(false);
-      setShowDialog(false);
       return;
     }
-
+  
     let coopId = null;
     if (teammateUsername) {
       coopId = await getUserIdByUsername(teammateUsername);
       if (!coopId) {
-        setBookingConfirmation('Teammate not found');
+        setBookingConfirmation(`${teammateUsername} was not found`);
+        setIsBooking(false);
+        return;
+      }
+  
+      // Check if the teammate already has a booking
+      existingBookingTime = listModel.userHasBooking(coopId);
+      if (existingBookingTime) {
+        setBookingConfirmation(`${teammateUsername} already has a booking at ${existingBookingTime}`);
         setIsBooking(false);
         return;
       }
     }
-
+  
     const sequence = listModel.getNextSequence();
 
     try {
