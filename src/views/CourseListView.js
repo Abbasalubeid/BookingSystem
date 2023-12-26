@@ -1,5 +1,5 @@
-import React from 'react';
-import Link from 'next/link';
+import React from "react";
+import Link from "next/link";
 import {
   Table,
   TableBody,
@@ -9,16 +9,20 @@ import {
   TableRow,
   TableHead,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { ExclamationTriangleIcon, ArrowLeftIcon } from "@radix-ui/react-icons";
 import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from "@/components/ui/alert";
+  ReloadIcon,
+  ExclamationTriangleIcon,
+  ArrowLeftIcon,
+} from "@radix-ui/react-icons";
+import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
-const CourseListView = ({ listData, error }) => {
+const CourseListView = ({
+  listData,
+  error,
+  onBadgeClick,
+  loadingListId,
+}) => {
   if (error) {
     return (
       <Alert variant="destructive">
@@ -33,11 +37,9 @@ const CourseListView = ({ listData, error }) => {
     return (
       <div className="text-center p-2">
         <Alert variant="destructive">
-        <ExclamationTriangleIcon className="h-4 w-4" />
+          <ExclamationTriangleIcon className="h-4 w-4" />
           <AlertTitle>No Lists Available</AlertTitle>
-          <AlertDescription>
-            This course has no lists yet.
-          </AlertDescription>
+          <AlertDescription>This course has no lists yet.</AlertDescription>
         </Alert>
         <Link href="/courses">
           <Button variant="destructive" className="mt-4">
@@ -49,10 +51,10 @@ const CourseListView = ({ listData, error }) => {
     );
   }
 
-  const courseTitle = listData.length > 0 ? listData[0].courseTitle : 'Course Sessions';
+  const courseTitle =
+    listData.length > 0 ? listData[0].courseTitle : "Course Sessions";
 
   return (
-    <>
       <Table>
         <TableCaption>{courseTitle}</TableCaption>
         <TableHeader>
@@ -65,7 +67,7 @@ const CourseListView = ({ listData, error }) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {listData.map(list => (
+          {listData.map((list) => (
             <TableRow key={list.id}>
               <TableCell>{list.description}</TableCell>
               <TableCell>{list.location}</TableCell>
@@ -74,16 +76,35 @@ const CourseListView = ({ listData, error }) => {
               <TableCell className="relative">
                 <p className="hidden md:inline md:w-1/2">{list.maxSlots}</p>
                 <div className="absolute bottom-1 right-3">
-                  <Badge variant={list.isFull ? "destructive" : "available"} size="sm:small md:normal">
-                    {list.isFull ? "Full" : `${list.availableSlots} Available `}
-                  </Badge>
+                  <Button
+                    onClick={() => !list.isFull && onBadgeClick(list.id)}
+                    disabled={list.isFull || loadingListId !== null} // Disable all buttons if any list is loading
+                    variant={list.isFull ? "destructive" : "primary"}
+                    className={
+                      loadingListId !== list.id && !list.isFull
+                        ? "bg-green-500"
+                        : ""
+                    }
+                  >
+                    {loadingListId === list.id ? (
+                      <>
+                        <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                        Loading
+                      </>
+                    ) : (
+                      `${
+                        list.isFull
+                          ? "Full"
+                          : list.availableSlots + " Available"
+                      }`
+                    )}
+                  </Button>
                 </div>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
-    </>
   );
 };
 

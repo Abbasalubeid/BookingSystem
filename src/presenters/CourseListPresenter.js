@@ -1,10 +1,15 @@
-import React, { useState, useEffect, Suspense } from 'react';
-import List from '../models/List';
-import CourseListView from '../views/CourseListView';
+import React, { useState, useEffect, Suspense } from "react";
+import List from "../models/List";
+import CourseListView from "@/views/CourseListView";
+import ReservationDialogView from "@/views/ReservationDialogView";
 
 const CourseListPresenter = ({ id }) => {
   const [listData, setListData] = useState([]);
+  const [listModelsMap, setListModelsMap] = useState({});
   const [error, setError] = useState(null);
+  const [loadingListId, setLoadingListId] = useState(null);
+  const [showDialog, setShowDialog] = useState(false);
+  const [nextAvailableTime, setNextAvailableTime] = useState(null);
 
   useEffect(() => {
     fetchLists();
@@ -16,9 +21,12 @@ const CourseListPresenter = ({ id }) => {
 
       if (response.ok) {
         const data = await response.json();
-        const processedData = data.map(item => {
+        const newProcessedData = [];
+        const newModelsMap = {};
+
+        data.forEach((item) => {
           const list = new List(item);
-          return {
+          newProcessedData.push({
             id: list.id,
             description: list.description,
             location: list.location,
@@ -27,22 +35,64 @@ const CourseListPresenter = ({ id }) => {
             maxSlots: list.maxSlots,
             courseTitle: list.courseTitle,
             availableSlots: list.getAvailableSlots(),
-            isFull: list.isFull()
-          };
+            isFull: list.isFull(),
+          });
+          newModelsMap[list.id] = list;
         });
-        setListData(processedData);
+
+        setListData(newProcessedData);
+        setListModelsMap(newModelsMap);
       } else {
-        setError('Failed to load course lists');
+        setError("Failed to load course lists");
       }
     } catch (error) {
       setError(error.message);
     }
   };
 
+  const handleBadgeClick = async (listId) => {
+    setLoadingListId(listId);
+    const listModel = listModelsMap[listId];
+
+    if (listModel) {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      const availableTime = listModel.nextAvailableSlot();
+      setNextAvailableTime(
+        availableTime ? availableTime : "No available slots"
+      );
+      setShowDialog(true);
+    }
+
+    setLoadingListId(null);
+  };
+
+  const handleCloseDialog = () => {
+    setShowDialog(false);
+    setNextAvailableTime(null);
+  };
+
   return (
     <Suspense>
-  <CourseListView listData={listData} error={error} />
-  </Suspense>);
+      <>
+        <CourseListView
+          listData={listData}
+          error={error}
+          onBadgeClick={handleBadgeClick}
+          loadingListId={loadingListId}
+          showDialog={showDialog}
+          nextAvailableTime={nextAvailableTime}
+          onCloseDialog={handleCloseDialog}
+        />
+        <ReservationDialogView 
+                        showDialog={showDialog} 
+                        onCloseDialog={handleCloseDialog} 
+                        nextAvailableTime={nextAvailableTime}>
+        
+        </ReservationDialogView>
+      </>
+    </Suspense>
+  );
 };
 
 export default CourseListPresenter;

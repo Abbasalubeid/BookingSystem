@@ -24,4 +24,17 @@ export default class List {
     isFull() {
       return this.getAvailableSlots() === 0;
     }
+
+    // Find the next available slot
+    nextAvailableSlot() {
+          const bookedSlots = new Set(this.reservations.map(reservation => reservation.sequence));
+          for (let sequence = 0; sequence < this.maxSlots; sequence++) {
+              if (!bookedSlots.has(sequence)) {
+                  const nextSlotTime = new Date(this.start.getTime());
+                  nextSlotTime.setMinutes(nextSlotTime.getMinutes() + this.interval * sequence);
+                  return nextSlotTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+              }
+          }
+          return null; // Return null if no slots are available
+      }
 }
