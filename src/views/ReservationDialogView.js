@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Button } from "@/components/ui/button";
 import { ClockIcon } from "@radix-ui/react-icons";
 
-const ReservationDialogView = ({ showDialog, onCloseDialog, nextAvailableTime }) => {
+const ReservationDialogView = ({ showDialog, onCloseDialog, nextAvailableTime, onBook, isBooking, bookingConfirmation, setTeammateUsername }) => {
     return (
         
         <Dialog open={showDialog} onOpenChange={onCloseDialog}>
@@ -16,13 +16,28 @@ const ReservationDialogView = ({ showDialog, onCloseDialog, nextAvailableTime })
                     </DialogDescription>
                 </DialogHeader>
                 <DialogFooter>
-                    <Button 
-                        variant="primary"
-                        className="bg-green-500 items-center flex justify-center"
-                        onClick={onCloseDialog}
-                    >
-                        Book
-                    </Button>
+                    
+                    {!bookingConfirmation ? (
+                    <>
+                    <input
+                            type="text"
+                            placeholder="Teammate's username"
+                            onChange={(e) => setTeammateUsername(e.target.value)}
+                            disabled={isBooking}
+                        />
+                        <Button 
+                            variant="primary"
+                            className={`bg-green-500 items-center flex justify-center ${isBooking ? 'loading' : ''}`}
+                            onClick={onBook}
+                            disabled={isBooking}
+                        >
+                            {isBooking ? 'Booking...' : 'Book'}
+                        </Button>
+                        </>
+                    ) : (
+                        <span>{bookingConfirmation}</span>
+                    )}
+                    
                 </DialogFooter>
             </DialogContent>
         </Dialog>

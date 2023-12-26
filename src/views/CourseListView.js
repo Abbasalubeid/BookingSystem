@@ -77,7 +77,7 @@ const CourseListView = ({
                 <p className="hidden md:inline md:w-1/2">{list.maxSlots}</p>
                 <div className="absolute bottom-1 right-3">
                   <Button
-                    onClick={() => !list.isFull && onBadgeClick(list.id)}
+                    onClick={() => !list.isFull && onBadgeClick(list)}
                     disabled={list.isFull || loadingListId !== null} // Disable all buttons if any list is loading
                     variant={list.isFull ? "destructive" : "primary"}
                     className={

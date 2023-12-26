@@ -1,19 +1,51 @@
+import { redirect } from 'next/navigation'
 import React, { useState, useEffect, Suspense } from "react";
-import List from "../models/List";
+import List from "@/models/List";
 import CourseListView from "@/views/CourseListView";
 import ReservationDialogView from "@/views/ReservationDialogView";
 
+
 const CourseListPresenter = ({ id }) => {
-  const [listData, setListData] = useState([]);
+  const [listDTOs, setlistDTOs] = useState([]);
   const [listModelsMap, setListModelsMap] = useState({});
   const [error, setError] = useState(null);
   const [loadingListId, setLoadingListId] = useState(null);
   const [showDialog, setShowDialog] = useState(false);
   const [nextAvailableTime, setNextAvailableTime] = useState(null);
+  const [currentList, setCurrentList] = useState(null);
+  const [isBooking, setIsBooking] = useState(false);
+  const [bookingConfirmation, setBookingConfirmation] = useState(null);
+  const [teammateUsername, setTeammateUsername] = useState("");
 
   useEffect(() => {
     fetchLists();
   }, [id]);
+
+    const getUserIdByUsername = async (username) => {
+    const response = await fetch(`/api/user?username=${username}`, {
+      method: 'GET',
+      credentials: 'include',
+    });
+
+    if (!response.ok) {
+      console.error('Failed to fetch user data');
+      return null;
+    }
+
+    const data = await response.json();
+    return data.userId;
+  };
+
+  const fetchUserId = async () => {
+    // middleware forces users to log in before this stage
+    const response = await fetch('/api/user', {
+        method: 'GET',
+        credentials: 'include',
+    });
+
+    const data = await response.json();
+    return data.userId;
+};
 
   const fetchLists = async () => {
     try {
@@ -40,7 +72,7 @@ const CourseListPresenter = ({ id }) => {
           newModelsMap[list.id] = list;
         });
 
-        setListData(newProcessedData);
+        setlistDTOs(newProcessedData);
         setListModelsMap(newModelsMap);
       } else {
         setError("Failed to load course lists");
@@ -50,9 +82,64 @@ const CourseListPresenter = ({ id }) => {
     }
   };
 
-  const handleBadgeClick = async (listId) => {
-    setLoadingListId(listId);
-    const listModel = listModelsMap[listId];
+
+  const handleBook = async () => {
+    setIsBooking(true);
+    const userId = await fetchUserId(); // Fetch the user ID of the logged-in user
+    if (!userId) {
+      setBookingConfirmation(`Log in to create a booking!`);
+      setIsBooking(false);
+        return;
+    }
+
+    const listModel = listModelsMap[currentList.id];
+    const existingBookingTime = listModel.userHasBooking(userId);
+    if (existingBookingTime) {
+      setBookingConfirmation(`You already have a booking at ${existingBookingTime}`);
+      setIsBooking(false);
+      setShowDialog(false);
+      return;
+    }
+
+    let coopId = null;
+    if (teammateUsername) {
+      coopId = await getUserIdByUsername(teammateUsername);
+      if (!coopId) {
+        setBookingConfirmation('Teammate not found');
+        setIsBooking(false);
+        return;
+      }
+    }
+
+    const sequence = listModel.getNextSequence();
+
+    try {
+        // API call to book the slot
+        const response = await fetch('/api/reservations', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ listId: listModel.id, sequence, coopId }),
+            credentials: 'include',
+        });
+
+        if (response.ok) {
+            setBookingConfirmation(`Booking successful!`); 
+            fetchLists(); // Refresh the list data
+        } else {
+          setBookingConfirmation('Failed to book the slot');
+        }
+    } catch (error) {
+        //TODO error UI
+    }
+
+    setIsBooking(false);
+    setTeammateUsername("");
+};
+
+  const handleBadgeClick = async (list) => {
+    setLoadingListId(list.id);
+    setCurrentList(list)
+    const listModel = listModelsMap[list.id];
 
     if (listModel) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -70,13 +157,17 @@ const CourseListPresenter = ({ id }) => {
   const handleCloseDialog = () => {
     setShowDialog(false);
     setNextAvailableTime(null);
+    setBookingConfirmation(null);
+    setCurrentList(null); 
+    setLoadingListId(null);
+    setTeammateUsername(""); 
   };
 
   return (
     <Suspense>
       <>
         <CourseListView
-          listData={listData}
+          listData={listDTOs}
           error={error}
           onBadgeClick={handleBadgeClick}
           loadingListId={loadingListId}
@@ -84,12 +175,15 @@ const CourseListPresenter = ({ id }) => {
           nextAvailableTime={nextAvailableTime}
           onCloseDialog={handleCloseDialog}
         />
-        <ReservationDialogView 
-                        showDialog={showDialog} 
-                        onCloseDialog={handleCloseDialog} 
-                        nextAvailableTime={nextAvailableTime}>
-        
-        </ReservationDialogView>
+        <ReservationDialogView
+          showDialog={showDialog}
+          onCloseDialog={handleCloseDialog}
+          nextAvailableTime={nextAvailableTime}
+          onBook={handleBook}
+          isBooking={isBooking}
+          bookingConfirmation={bookingConfirmation}
+          setTeammateUsername={setTeammateUsername}
+        ></ReservationDialogView>
       </>
     </Suspense>
   );
