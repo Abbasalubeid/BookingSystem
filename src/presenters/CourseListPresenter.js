@@ -27,7 +27,7 @@ const CourseListPresenter = ({ id }) => {
     });
 
     if (!response.ok) {
-      console.error("Failed to fetch user data");
+      // console.error("Failed to fetch user data");
       return null;
     }
 
@@ -84,7 +84,7 @@ const CourseListPresenter = ({ id }) => {
   const handleBook = async () => {
     setIsBooking(true);
     const user = await fetchUserId(); // Fetch the logged-in user
-    if (!user.id) {
+    if (!user) {
       setBookingConfirmation(`Log in to create a booking!`);
       setIsBooking(false);
       return;
@@ -103,8 +103,7 @@ const CourseListPresenter = ({ id }) => {
     let coop = null;
     if (teammateUsername) {
       coop = await getUserByUsername(teammateUsername);
-      console.log(coop);
-      if (!coop.id) {
+      if (!coop) {
         setTeammateError(`${teammateUsername} was not found`);
         setIsBooking(false);
         return;
@@ -136,7 +135,7 @@ const CourseListPresenter = ({ id }) => {
       if (response.ok) {
         setBookingConfirmation(
           `Booking confirmed for ${user.username}${
-            teammateUsername ? ` and ${teammateUsername}` : ""
+            coop.username ? ` and ${coop.username}` : ""
           } at ${nextAvailableTime}`
         );
 
