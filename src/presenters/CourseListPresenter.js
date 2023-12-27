@@ -3,7 +3,7 @@ import List from "@/models/List";
 import CourseListView from "@/views/CourseListView";
 import ReservationDialogView from "@/views/ReservationDialogView";
 
-const CourseListPresenter = ({ id }) => {
+const CourseListPresenter = ({ courseId }) => {
   const [listDTOs, setlistDTOs] = useState([]);
   const [listModelsMap, setListModelsMap] = useState({});
   const [error, setError] = useState(null);
@@ -18,7 +18,7 @@ const CourseListPresenter = ({ id }) => {
 
   useEffect(() => {
     fetchLists();
-  }, [id]);
+  }, [courseId]);
 
   const getUserByUsername = async (username) => {
     const response = await fetch(`/api/user?username=${username}`, {
@@ -46,9 +46,21 @@ const CourseListPresenter = ({ id }) => {
     return data;
   };
 
+  const isUserRegisteredInCourse = async (userId, courseId) => {
+    const response = await fetch(`/api/access?userId=${userId}&courseId=${courseId}`)
+  
+    if (!response.ok) {
+      console.error("Failed to check course access");
+      return false;
+    }
+  
+    const data = await response.json();
+    return data.isRegistered;
+  };
+
   const fetchLists = async () => {
     try {
-      const response = await fetch(`/api/course?id=${id}`);
+      const response = await fetch(`/api/course?id=${courseId}`);
 
       if (response.ok) {
         const data = await response.json();
@@ -105,6 +117,13 @@ const CourseListPresenter = ({ id }) => {
       coop = await getUserByUsername(teammateUsername);
       if (!coop) {
         setTeammateError(`${teammateUsername} was not found`);
+        setIsBooking(false);
+        return;
+      }
+    
+      const isRegistered = await isUserRegisteredInCourse(coop.id, courseId);
+      if (!isRegistered) {
+        setTeammateError(`${teammateUsername} is not registered in this course`);
         setIsBooking(false);
         return;
       }
