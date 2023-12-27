@@ -1,25 +1,10 @@
 import { sql } from "@vercel/postgres";
-import jwt from "jsonwebtoken";
-import cookie from 'cookie';
 
 export async function GET(request) {
   try {
-    const cookies = cookie.parse(request.headers.get('cookie') || '');
-    const token = cookies.authToken;
-
-    if (!token) {
-      throw new Error("No token provided");
-    }
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const userId = decoded.userId; 
-
     const coursesQuery = await sql`
     SELECT *
-    FROM courses c
-    JOIN access a ON c.id = a.course_id
-    WHERE a.user_id = ${userId};
-    `;
+    FROM courses;`;
     const courses = coursesQuery.rows;
 
     //console.log(courses);

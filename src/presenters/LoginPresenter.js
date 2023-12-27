@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import LoginView from '../views/LoginView';
-import { User } from '../models/User';
+import  User  from '../models/User';
 
 
 const LoginPresenter = () => {
@@ -17,9 +17,8 @@ const LoginPresenter = () => {
       });
 
       if (response.ok) {
-        const { user: userData } = await response.json();
-        // Create a User instance with the returned data
-        const user = new User(userData.id, userData.username, userData.admin);
+        const userData = await response.json();
+        const user = new User(userData.user);
         console.log(user.greet());
         setIsLoginSuccess(true);
       } else {
