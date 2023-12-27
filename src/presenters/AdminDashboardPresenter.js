@@ -1,5 +1,3 @@
-// presenters/AdminDashboardPresenter.js
-
 import React from 'react';
 import AdminDashboardView from '@/views/AdminDashboardView';
 
