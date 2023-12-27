@@ -1,4 +1,3 @@
-import { redirect } from 'next/navigation'
 import React, { useState, useEffect, Suspense } from "react";
 import List from "@/models/List";
 import CourseListView from "@/views/CourseListView";
@@ -16,6 +15,7 @@ const CourseListPresenter = ({ id }) => {
   const [isBooking, setIsBooking] = useState(false);
   const [bookingConfirmation, setBookingConfirmation] = useState(null);
   const [teammateUsername, setTeammateUsername] = useState("");
+  const [teammateError, setTeammateError] = useState("");
 
   useEffect(() => {
     fetchLists();
@@ -104,10 +104,11 @@ const CourseListPresenter = ({ id }) => {
     if (teammateUsername) {
       coopId = await getUserIdByUsername(teammateUsername);
       if (!coopId) {
-        setBookingConfirmation(`${teammateUsername} was not found`);
+        setTeammateError(`${teammateUsername} was not found`);
         setIsBooking(false);
         return;
       }
+      setTeammateError("");
   
       // Check if the teammate already has a booking
       existingBookingTime = listModel.userHasBooking(coopId);
@@ -130,7 +131,8 @@ const CourseListPresenter = ({ id }) => {
         });
 
         if (response.ok) {
-            setBookingConfirmation(`Booking successful!`); 
+          setBookingConfirmation(`Booking confirmed for ${userId}${teammateUsername ? ` and ${teammateUsername}` : ''} at ${nextAvailableTime}`);
+
             fetchLists(); // Refresh the list data
         } else {
           setBookingConfirmation('Failed to book the slot');
@@ -168,19 +170,17 @@ const CourseListPresenter = ({ id }) => {
     setCurrentList(null); 
     setLoadingListId(null);
     setTeammateUsername(""); 
+    setTeammateError(""); 
   };
 
   return (
-    <Suspense>
       <>
         <CourseListView
           listData={listDTOs}
           error={error}
           onBadgeClick={handleBadgeClick}
           loadingListId={loadingListId}
-          showDialog={showDialog}
           nextAvailableTime={nextAvailableTime}
-          onCloseDialog={handleCloseDialog}
         />
         <ReservationDialogView
           showDialog={showDialog}
@@ -190,9 +190,9 @@ const CourseListPresenter = ({ id }) => {
           isBooking={isBooking}
           bookingConfirmation={bookingConfirmation}
           setTeammateUsername={setTeammateUsername}
+          teammateError={teammateError}
         ></ReservationDialogView>
       </>
-    </Suspense>
   );
 };
 
