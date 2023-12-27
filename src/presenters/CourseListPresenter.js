@@ -3,7 +3,7 @@ import List from "@/models/List";
 import CourseListView from "@/views/CourseListView";
 import ReservationDialogView from "@/views/ReservationDialogView";
 
-const CourseListPresenter = ({ id }) => {
+const CourseListPresenter = ({ courseId }) => {
   const [listDTOs, setlistDTOs] = useState([]);
   const [listModelsMap, setListModelsMap] = useState({});
   const [error, setError] = useState(null);
@@ -18,21 +18,21 @@ const CourseListPresenter = ({ id }) => {
 
   useEffect(() => {
     fetchLists();
-  }, [id]);
+  }, [courseId]);
 
-  const getUserIdByUsername = async (username) => {
+  const getUserByUsername = async (username) => {
     const response = await fetch(`/api/user?username=${username}`, {
       method: "GET",
       credentials: "include",
     });
 
     if (!response.ok) {
-      console.error("Failed to fetch user data");
+      // console.error("Failed to fetch user data");
       return null;
     }
 
     const data = await response.json();
-    return data.userId;
+    return data;
   };
 
   const fetchUserId = async () => {
@@ -43,12 +43,24 @@ const CourseListPresenter = ({ id }) => {
     });
 
     const data = await response.json();
-    return data.userId;
+    return data;
+  };
+
+  const isUserRegisteredInCourse = async (userId, courseId) => {
+    const response = await fetch(`/api/access?userId=${userId}&courseId=${courseId}`)
+  
+    if (!response.ok) {
+      console.error("Failed to check course access");
+      return false;
+    }
+  
+    const data = await response.json();
+    return data.isRegistered;
   };
 
   const fetchLists = async () => {
     try {
-      const response = await fetch(`/api/course?id=${id}`);
+      const response = await fetch(`/api/course?id=${courseId}`);
 
       if (response.ok) {
         const data = await response.json();
@@ -83,15 +95,15 @@ const CourseListPresenter = ({ id }) => {
 
   const handleBook = async () => {
     setIsBooking(true);
-    const userId = await fetchUserId(); // Fetch the user ID of the logged-in user
-    if (!userId) {
+    const user = await fetchUserId(); // Fetch the logged-in user
+    if (!user) {
       setBookingConfirmation(`Log in to create a booking!`);
       setIsBooking(false);
       return;
     }
 
     const listModel = listModelsMap[currentList.id];
-    let existingBookingTime = listModel.userHasBooking(userId);
+    let existingBookingTime = listModel.userHasBooking(user.id);
     if (existingBookingTime) {
       setBookingConfirmation(
         `You already have a booking at ${existingBookingTime}`
@@ -100,21 +112,28 @@ const CourseListPresenter = ({ id }) => {
       return;
     }
 
-    let coopId = null;
+    let coop = null;
     if (teammateUsername) {
-      coopId = await getUserIdByUsername(teammateUsername);
-      if (!coopId) {
+      coop = await getUserByUsername(teammateUsername);
+      if (!coop) {
         setTeammateError(`${teammateUsername} was not found`);
+        setIsBooking(false);
+        return;
+      }
+    
+      const isRegistered = await isUserRegisteredInCourse(coop.id, courseId);
+      if (!isRegistered) {
+        setTeammateError(`${teammateUsername} is not registered in this course`);
         setIsBooking(false);
         return;
       }
       setTeammateError("");
 
       // Check if the teammate already has a booking
-      existingBookingTime = listModel.userHasBooking(coopId);
+      existingBookingTime = listModel.userHasBooking(coop.id);
       if (existingBookingTime) {
         setBookingConfirmation(
-          `${teammateUsername} already has a booking at ${existingBookingTime}`
+          `${coop.username} already has a booking at ${existingBookingTime}`
         );
         setIsBooking(false);
         return;
@@ -128,14 +147,14 @@ const CourseListPresenter = ({ id }) => {
       const response = await fetch("/api/reservations", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ listId: listModel.id, sequence, coopId }),
+        body: JSON.stringify({ listId: listModel.id, sequence, coopId : coop.id }),
         credentials: "include",
       });
 
       if (response.ok) {
         setBookingConfirmation(
-          `Booking confirmed for ${userId}${
-            teammateUsername ? ` and ${teammateUsername}` : ""
+          `Booking confirmed for ${user.username}${
+            coop.username ? ` and ${coop.username}` : ""
           } at ${nextAvailableTime}`
         );
 
