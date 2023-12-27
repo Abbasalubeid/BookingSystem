@@ -43,7 +43,7 @@ const CourseListPresenter = ({ id }) => {
     });
 
     const data = await response.json();
-    return data.userId;
+    return data;
   };
 
   const fetchLists = async () => {
@@ -83,15 +83,15 @@ const CourseListPresenter = ({ id }) => {
 
   const handleBook = async () => {
     setIsBooking(true);
-    const userId = await fetchUserId(); // Fetch the user ID of the logged-in user
-    if (!userId) {
+    const user = await fetchUserId(); // Fetch the logged-in user
+    if (!user.id) {
       setBookingConfirmation(`Log in to create a booking!`);
       setIsBooking(false);
       return;
     }
 
     const listModel = listModelsMap[currentList.id];
-    let existingBookingTime = listModel.userHasBooking(userId);
+    let existingBookingTime = listModel.userHasBooking(user.id);
     if (existingBookingTime) {
       setBookingConfirmation(
         `You already have a booking at ${existingBookingTime}`
@@ -134,7 +134,7 @@ const CourseListPresenter = ({ id }) => {
 
       if (response.ok) {
         setBookingConfirmation(
-          `Booking confirmed for ${userId}${
+          `Booking confirmed for ${user.username}${
             teammateUsername ? ` and ${teammateUsername}` : ""
           } at ${nextAvailableTime}`
         );

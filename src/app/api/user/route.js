@@ -40,7 +40,8 @@ export async function GET(request) {
             }
 
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
-            return new Response(JSON.stringify({ userId: decoded.userId }), {
+            return new Response(JSON.stringify({ id: decoded.userId,
+                username: decoded.username  }), {
                 status: 200,
                 headers: {
                     'Content-Type': 'application/json',
