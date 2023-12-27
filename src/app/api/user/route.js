@@ -11,9 +11,8 @@ export async function GET(request) {
             // Fetch user ID by username
             const userQuery = await sql`SELECT * FROM users WHERE LOWER(username) = LOWER(${username});`
             const user = userQuery.rows[0];
-            console.log(user);
             if (user) {
-                return new Response(JSON.stringify({ id: decoded.userId, username: decoded.username  }), {
+                return new Response(JSON.stringify({ id: user.id, username: user.username  }), {
                     status: 200,
                     headers: {
                         'Content-Type': 'application/json',
