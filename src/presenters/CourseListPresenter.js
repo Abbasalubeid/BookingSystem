@@ -3,7 +3,6 @@ import List from "@/models/List";
 import CourseListView from "@/views/CourseListView";
 import ReservationDialogView from "@/views/ReservationDialogView";
 
-
 const CourseListPresenter = ({ id }) => {
   const [listDTOs, setlistDTOs] = useState([]);
   const [listModelsMap, setListModelsMap] = useState({});
@@ -21,14 +20,14 @@ const CourseListPresenter = ({ id }) => {
     fetchLists();
   }, [id]);
 
-    const getUserIdByUsername = async (username) => {
+  const getUserIdByUsername = async (username) => {
     const response = await fetch(`/api/user?username=${username}`, {
-      method: 'GET',
-      credentials: 'include',
+      method: "GET",
+      credentials: "include",
     });
 
     if (!response.ok) {
-      console.error('Failed to fetch user data');
+      console.error("Failed to fetch user data");
       return null;
     }
 
@@ -38,14 +37,14 @@ const CourseListPresenter = ({ id }) => {
 
   const fetchUserId = async () => {
     // middleware forces users to log in before this stage
-    const response = await fetch('/api/user', {
-        method: 'GET',
-        credentials: 'include',
+    const response = await fetch("/api/user", {
+      method: "GET",
+      credentials: "include",
     });
 
     const data = await response.json();
     return data.userId;
-};
+  };
 
   const fetchLists = async () => {
     try {
@@ -82,7 +81,6 @@ const CourseListPresenter = ({ id }) => {
     }
   };
 
-
   const handleBook = async () => {
     setIsBooking(true);
     const userId = await fetchUserId(); // Fetch the user ID of the logged-in user
@@ -91,15 +89,17 @@ const CourseListPresenter = ({ id }) => {
       setIsBooking(false);
       return;
     }
-  
+
     const listModel = listModelsMap[currentList.id];
     let existingBookingTime = listModel.userHasBooking(userId);
     if (existingBookingTime) {
-      setBookingConfirmation(`You already have a booking at ${existingBookingTime}`);
+      setBookingConfirmation(
+        `You already have a booking at ${existingBookingTime}`
+      );
       setIsBooking(false);
       return;
     }
-  
+
     let coopId = null;
     if (teammateUsername) {
       coopId = await getUserIdByUsername(teammateUsername);
@@ -109,45 +109,51 @@ const CourseListPresenter = ({ id }) => {
         return;
       }
       setTeammateError("");
-  
+
       // Check if the teammate already has a booking
       existingBookingTime = listModel.userHasBooking(coopId);
       if (existingBookingTime) {
-        setBookingConfirmation(`${teammateUsername} already has a booking at ${existingBookingTime}`);
+        setBookingConfirmation(
+          `${teammateUsername} already has a booking at ${existingBookingTime}`
+        );
         setIsBooking(false);
         return;
       }
     }
-  
+
     const sequence = listModel.getNextSequence();
 
     try {
-        // API call to book the slot
-        const response = await fetch('/api/reservations', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ listId: listModel.id, sequence, coopId }),
-            credentials: 'include',
-        });
+      // API call to book the slot
+      const response = await fetch("/api/reservations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ listId: listModel.id, sequence, coopId }),
+        credentials: "include",
+      });
 
-        if (response.ok) {
-          setBookingConfirmation(`Booking confirmed for ${userId}${teammateUsername ? ` and ${teammateUsername}` : ''} at ${nextAvailableTime}`);
+      if (response.ok) {
+        setBookingConfirmation(
+          `Booking confirmed for ${userId}${
+            teammateUsername ? ` and ${teammateUsername}` : ""
+          } at ${nextAvailableTime}`
+        );
 
-            fetchLists(); // Refresh the list data
-        } else {
-          setBookingConfirmation('Failed to book the slot');
-        }
+        fetchLists(); // Refresh the list data
+      } else {
+        setBookingConfirmation("Failed to book the slot");
+      }
     } catch (error) {
-        //TODO error UI
+      //TODO error UI
     }
 
     setIsBooking(false);
     setTeammateUsername("");
-};
+  };
 
   const handleBadgeClick = async (list) => {
     setLoadingListId(list.id);
-    setCurrentList(list)
+    setCurrentList(list);
     const listModel = listModelsMap[list.id];
 
     if (listModel) {
@@ -167,32 +173,32 @@ const CourseListPresenter = ({ id }) => {
     setShowDialog(false);
     setNextAvailableTime(null);
     setBookingConfirmation(null);
-    setCurrentList(null); 
+    setCurrentList(null);
     setLoadingListId(null);
-    setTeammateUsername(""); 
-    setTeammateError(""); 
+    setTeammateUsername("");
+    setTeammateError("");
   };
 
   return (
-      <>
-        <CourseListView
-          listData={listDTOs}
-          error={error}
-          onBadgeClick={handleBadgeClick}
-          loadingListId={loadingListId}
-          nextAvailableTime={nextAvailableTime}
-        />
-        <ReservationDialogView
-          showDialog={showDialog}
-          onCloseDialog={handleCloseDialog}
-          nextAvailableTime={nextAvailableTime}
-          onBook={handleBook}
-          isBooking={isBooking}
-          bookingConfirmation={bookingConfirmation}
-          setTeammateUsername={setTeammateUsername}
-          teammateError={teammateError}
-        ></ReservationDialogView>
-      </>
+    <>
+      <CourseListView
+        listData={listDTOs}
+        error={error}
+        onBadgeClick={handleBadgeClick}
+        loadingListId={loadingListId}
+        nextAvailableTime={nextAvailableTime}
+      />
+      <ReservationDialogView
+        showDialog={showDialog}
+        onCloseDialog={handleCloseDialog}
+        nextAvailableTime={nextAvailableTime}
+        onBook={handleBook}
+        isBooking={isBooking}
+        bookingConfirmation={bookingConfirmation}
+        setTeammateUsername={setTeammateUsername}
+        teammateError={teammateError}
+      ></ReservationDialogView>
+    </>
   );
 };
 
