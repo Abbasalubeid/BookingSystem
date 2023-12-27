@@ -22,7 +22,6 @@ const CourseAccessView = ({ users, courses, roles, onUserChange, onCourseChange,
   const [user, setUser] = React.useState(1)
   const [course, setCourse] = React.useState(1)
   const [role, setRole] = React.useState(0)
-  console.log(users);
 
   const handleFormSubmit = (event) => {
     event.preventDefault();
