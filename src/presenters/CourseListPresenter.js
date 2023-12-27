@@ -20,7 +20,7 @@ const CourseListPresenter = ({ id }) => {
     fetchLists();
   }, [id]);
 
-  const getUserIdByUsername = async (username) => {
+  const getUserByUsername = async (username) => {
     const response = await fetch(`/api/user?username=${username}`, {
       method: "GET",
       credentials: "include",
@@ -32,7 +32,7 @@ const CourseListPresenter = ({ id }) => {
     }
 
     const data = await response.json();
-    return data.userId;
+    return data;
   };
 
   const fetchUserId = async () => {
@@ -100,10 +100,11 @@ const CourseListPresenter = ({ id }) => {
       return;
     }
 
-    let coopId = null;
+    let coop = null;
     if (teammateUsername) {
-      coopId = await getUserIdByUsername(teammateUsername);
-      if (!coopId) {
+      coop = await getUserByUsername(teammateUsername);
+      console.log(coop);
+      if (!coop.id) {
         setTeammateError(`${teammateUsername} was not found`);
         setIsBooking(false);
         return;
@@ -111,10 +112,10 @@ const CourseListPresenter = ({ id }) => {
       setTeammateError("");
 
       // Check if the teammate already has a booking
-      existingBookingTime = listModel.userHasBooking(coopId);
+      existingBookingTime = listModel.userHasBooking(coop.id);
       if (existingBookingTime) {
         setBookingConfirmation(
-          `${teammateUsername} already has a booking at ${existingBookingTime}`
+          `${coop.username} already has a booking at ${existingBookingTime}`
         );
         setIsBooking(false);
         return;
@@ -128,7 +129,7 @@ const CourseListPresenter = ({ id }) => {
       const response = await fetch("/api/reservations", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ listId: listModel.id, sequence, coopId }),
+        body: JSON.stringify({ listId: listModel.id, sequence, coopId : coop.id }),
         credentials: "include",
       });
 

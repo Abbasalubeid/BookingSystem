@@ -9,10 +9,11 @@ export async function GET(request) {
 
         if (username) {
             // Fetch user ID by username
-            const userQuery = await sql`SELECT id FROM users WHERE username = ${username};`
+            const userQuery = await sql`SELECT * FROM users WHERE LOWER(username) = LOWER(${username});`
             const user = userQuery.rows[0];
+            console.log(user);
             if (user) {
-                return new Response(JSON.stringify({ userId: user.id }), {
+                return new Response(JSON.stringify({ id: decoded.userId, username: decoded.username  }), {
                     status: 200,
                     headers: {
                         'Content-Type': 'application/json',
@@ -40,8 +41,7 @@ export async function GET(request) {
             }
 
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
-            return new Response(JSON.stringify({ id: decoded.userId,
-                username: decoded.username  }), {
+            return new Response(JSON.stringify({ id: decoded.userId, username: decoded.username  }), {
                 status: 200,
                 headers: {
                     'Content-Type': 'application/json',
