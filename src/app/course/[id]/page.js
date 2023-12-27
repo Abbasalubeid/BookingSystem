@@ -3,7 +3,7 @@ import CourseListPresenter from '@/presenters/CourseListPresenter';
 
 const CourseListPage = ({ params }) => {
   
-  return <CourseListPresenter id={params.id}/>;
+  return <CourseListPresenter courseId={params.id}/>;
 };
 
 export default CourseListPage;
