@@ -79,7 +79,7 @@ export async function GET(request) {
     const userId = decoded.userId;
 
     const reservationsQuery = await sql`
-    SELECT r.*, l.description, l.start, l.interval, c.title as course_title,
+    SELECT r.*, l.description, l.start, l.interval, l.location, c.title as course_title,
     u.username as user_username, co.username as coop_username
     FROM reservations r
     JOIN lists l ON l.id = r.list_id
