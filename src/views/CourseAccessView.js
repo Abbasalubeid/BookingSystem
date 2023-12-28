@@ -1,13 +1,11 @@
 import React from 'react';
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Card,
   CardContent,
@@ -36,50 +34,46 @@ const CourseAccessView = ({ users, courses, roles, onUserChange, onCourseChange,
   </CardHeader>
   <form onSubmit={handleFormSubmit}>
     <CardContent className="grid grid-cols-3 gap-4">
-    <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline">Select User</Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuLabel>Users</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuRadioGroup value={user} onValueChange={setUser}>
-          {users.map(user => (
-          <DropdownMenuRadioItem key={user.id} value={user.id}>{user.username}</DropdownMenuRadioItem>
-          ))}
-          </DropdownMenuRadioGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
+    <Select onValueChange={setUser} className="mb-4">
+  <SelectTrigger className="w-full border border-gray-300 rounded-md shadow-sm">
+    <SelectValue placeholder="Select User" />
+  </SelectTrigger>
+  <SelectContent className="border-gray-300 rounded-md shadow-sm">
+    {users.map(user => (
+      <SelectItem key={user.id} value={user.id} className="hover:bg-gray-100">
+        {user.username}
+      </SelectItem>
+    ))}
+  </SelectContent>
+</Select>
 
-      <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline">Select Course</Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        <DropdownMenuLabel>Courses</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuRadioGroup value={course} onValueChange={setCourse}>
-        {courses.map(course => (
-          <DropdownMenuRadioItem key={course.id} value={course.id}>{course.title}</DropdownMenuRadioItem>
-          ))}
-        </DropdownMenuRadioGroup>
-      </DropdownMenuContent>
-      </DropdownMenu>
+<Select onValueChange={setCourse} className="mb-4">
+  <SelectTrigger className="w-full border border-gray-300 rounded-md shadow-sm">
+    <SelectValue placeholder="Select Course" />
+  </SelectTrigger>
+  <SelectContent className="border-gray-300 rounded-md shadow-sm">
+    {courses.map(course => (
+      <SelectItem key={course.id} value={course.id} className="hover:bg-gray-100">
+        {course.title}
+      </SelectItem>
+    ))}
+  </SelectContent>
+</Select>
 
-      <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline">Select Role</Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        <DropdownMenuLabel>Roles</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuRadioGroup value={role} onValueChange={setRole}>
-          {roles.map((role, index) => (
-          <DropdownMenuRadioItem key={index} value={index}>{role}</DropdownMenuRadioItem>
-          ))}
-        </DropdownMenuRadioGroup>
-      </DropdownMenuContent>
-      </DropdownMenu>
+
+<Select onValueChange={setRole} className="mb-4">
+  <SelectTrigger className="w-full border border-gray-300 rounded-md shadow-sm">
+    <SelectValue placeholder="Select Role" />
+  </SelectTrigger>
+  <SelectContent className="border-gray-300 rounded-md shadow-sm">
+    {roles.map((role, index) => (
+      <SelectItem key={index} value={index} className="hover:bg-gray-100">
+        {role}
+      </SelectItem>
+    ))}
+  </SelectContent>
+</Select>
+
     </CardContent>
     <CardFooter className="flex justify-center">
       <Button type="submit" className="w-1/2">
