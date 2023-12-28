@@ -2,7 +2,7 @@ import React, { useState, useEffect, Suspense } from "react";
 import List from "@/models/List";
 import CourseListView from "@/views/CourseListView";
 import ReservationDialogView from "@/views/ReservationDialogView";
-import Pusher from 'pusher-js';
+
 
 const CourseListPresenter = ({ courseId }) => {
   const [listDTOs, setlistDTOs] = useState([]);
@@ -21,22 +21,7 @@ const CourseListPresenter = ({ courseId }) => {
     fetchLists();
   }, [courseId]);
 
-  useEffect(() => {
-    const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY, {
-      cluster: 'eu'
-    });
 
-    const channel = pusher.subscribe('booking-channel');
-    channel.bind('booking-event', function(data) {
-      fetchLists();
-    });
-
-    return () => {
-      channel.unbind_all();
-      channel.unsubscribe();
-      pusher.disconnect();
-    };
-  }, []);
 
 
   const getUserByUsername = async (username) => {
