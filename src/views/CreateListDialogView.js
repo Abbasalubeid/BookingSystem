@@ -4,20 +4,15 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
-  DialogFooter,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { ClockIcon } from "@radix-ui/react-icons";
 
 const ReservationDialogView = ({
-  courseId,
   showDialog,
   onCloseDialog,
   onCreateList,
-  isBooking,
   setDescription,
   setLocation,
   setStartTime,
