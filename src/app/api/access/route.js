@@ -11,7 +11,6 @@ export async function GET(request) {
     `;
     const isRegistered = accessQuery.rows[0].count > 0;
   
-    console.log(isRegistered);
     return new Response(JSON.stringify({ isRegistered }), {
       status: 200,
       headers: {
