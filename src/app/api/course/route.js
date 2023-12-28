@@ -5,7 +5,6 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const courseId = searchParams.get("id");
 
-    // Fetch lists for the course
     const listsQuery = await sql`
       SELECT l.*, c.title AS course_title
       FROM lists l

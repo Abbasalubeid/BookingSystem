@@ -31,6 +31,7 @@ const AdminDashboardView = () => {
       { /* 3 
         Användare ska endast ha rättigheter på kurser som admin bestämmer och därför 
         krävs en tabell access som länkar mellan course_id och user_id. 
+        KLAR
       */}
 
       <Link className="mb-4 w-80 md:max-w-xl transition duration-150 ease-in-out transform hover:shadow-lg hover:-translate-y-1" href="/admin/lists" passHref>
