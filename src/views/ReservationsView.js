@@ -26,8 +26,7 @@ const ReservationsView = ({ reservations, error, onDetailsClick, onDeleteClick, 
           <TableHead>Description</TableHead>
           <TableHead>Start Time</TableHead>
           <TableHead>End Time</TableHead>
-          {/* <TableHead>User</TableHead>
-          <TableHead>Co-op Partner</TableHead> */}
+          <TableHead>Location</TableHead>
           <TableHead></TableHead>
           <TableHead></TableHead>
         </TableRow>
@@ -39,8 +38,7 @@ const ReservationsView = ({ reservations, error, onDetailsClick, onDeleteClick, 
             <TableCell>{reservation.description}</TableCell>
             <TableCell>{reservation.startTime}</TableCell>
             <TableCell>{reservation.endTime}</TableCell>
-            {/* <TableCell>{reservation.userUsername}</TableCell>
-            <TableCell>{reservation.coopUsername || 'N/A'}</TableCell> */}
+            <TableCell>{reservation.location}</TableCell>
             <TableCell>
               <Button onClick={() => onDetailsClick(reservation)}>Details</Button>
             </TableCell>

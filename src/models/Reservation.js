@@ -11,6 +11,7 @@ export default class Reservation {
     this.start = new Date(data.start); // Start time of the list
     this.interval = data.interval; // Interval of the list
     this.courseTitle = data.course_title;
+    this.location = data.location;
   }
 
   // Check if the reservation is cooperative (i.e., has a coopId)
