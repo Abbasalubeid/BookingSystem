@@ -6,7 +6,6 @@ export async function GET(request) {
     try {
         const url = new URL(request.url);
         const username = url.searchParams.get('username');
-
         if (username) {
             // Fetch user ID by username
             const userQuery = await sql`SELECT * FROM users WHERE LOWER(username) = LOWER(${username});`

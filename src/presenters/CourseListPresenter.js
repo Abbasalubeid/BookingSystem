@@ -2,6 +2,7 @@ import React, { useState, useEffect, Suspense } from "react";
 import List from "@/models/List";
 import CourseListView from "@/views/CourseListView";
 import ReservationDialogView from "@/views/ReservationDialogView";
+import Pusher from 'pusher-js';
 
 const CourseListPresenter = ({ courseId }) => {
   const [listDTOs, setlistDTOs] = useState([]);
@@ -20,6 +21,24 @@ const CourseListPresenter = ({ courseId }) => {
     fetchLists();
   }, [courseId]);
 
+  useEffect(() => {
+    const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY, {
+      cluster: 'eu'
+    });
+
+    const channel = pusher.subscribe('booking-channel');
+    channel.bind('booking-event', function(data) {
+      fetchLists();
+    });
+
+    return () => {
+      channel.unbind_all();
+      channel.unsubscribe();
+      pusher.disconnect();
+    };
+  }, []);
+
+
   const getUserByUsername = async (username) => {
     const response = await fetch(`/api/user?username=${username}`, {
       method: "GET",
@@ -35,7 +54,7 @@ const CourseListPresenter = ({ courseId }) => {
     return data;
   };
 
-  const fetchUserId = async () => {
+  const fetchUser = async () => {
     // middleware forces users to log in before this stage
     const response = await fetch("/api/user", {
       method: "GET",
@@ -95,8 +114,8 @@ const CourseListPresenter = ({ courseId }) => {
 
   const handleBook = async () => {
     setIsBooking(true);
-    const user = await fetchUserId(); // Fetch the logged-in user
-    if (!user) {
+    const user = await fetchUser(); // Fetch the logged-in user
+    if (!user.id) {
       setBookingConfirmation(`Log in to create a booking!`);
       setIsBooking(false);
       return;
@@ -113,14 +132,16 @@ const CourseListPresenter = ({ courseId }) => {
     }
 
     let coop = null;
-    if (teammateUsername) {
+    let coopId = null;
+    if (teammateUsername.trim()) {
       coop = await getUserByUsername(teammateUsername);
       if (!coop) {
         setTeammateError(`${teammateUsername} was not found`);
         setIsBooking(false);
         return;
       }
-    
+      
+      coopId = coop.id;
       const isRegistered = await isUserRegisteredInCourse(coop.id, courseId);
       if (!isRegistered) {
         setTeammateError(`${teammateUsername} is not registered in this course`);
@@ -147,16 +168,15 @@ const CourseListPresenter = ({ courseId }) => {
       const response = await fetch("/api/reservations", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ listId: listModel.id, sequence, coopId : coop.id }),
+        body: JSON.stringify({ listId: listModel.id, sequence, coopId: coopId}),
         credentials: "include",
       });
 
       if (response.ok) {
-        setBookingConfirmation(
-          `Booking confirmed for ${user.username}${
-            coop.username ? ` and ${coop.username}` : ""
-          } at ${nextAvailableTime}`
-        );
+        const bookingMessage = coop 
+        ? `Booking confirmed for ${user.username} and ${coop.username} at ${nextAvailableTime}`
+        : `Booking confirmed for ${user.username} at ${nextAvailableTime}`;
+      setBookingConfirmation(bookingMessage);
 
         fetchLists(); // Refresh the list data
       } else {
