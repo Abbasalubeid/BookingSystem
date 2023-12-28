@@ -1,5 +1,4 @@
 import React from 'react';
-import { useRouter } from 'next/navigation';
 import {
   Select,
   SelectContent,
@@ -18,17 +17,26 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 
-const ListManagementView = ({ courses, lists, onSelectCourse, selectedCourse }) => {
-  const router = useRouter();
+const ListManagementView = ({ courses, lists, onSelectCourse, selectedCourse, onDeleteList, onAddListClick }) => {
+  const [listId, setListId] = React.useState(null)
 
   const handleSelectChange = (value) => {
     onSelectCourse(value);
   };
 
+  const handleRemoveClick = (id) => {
+    setListId(id);
+  };
+
+  const handleFormSubmit = (event) => {
+    event.preventDefault();
+    onDeleteList(listId);
+  };
+
   const courseTitle = lists.length > 0 ? lists[0].courseTitle : "Course Sessions";
 
   return (
-    <div className="container mx-auto p-4">
+    <form onSubmit={handleFormSubmit} className="container mx-auto p-4">
       <Select onValueChange={handleSelectChange} className="mb-4">
         <SelectTrigger className="w-full border border-gray-300 rounded-md shadow-sm">
           <SelectValue placeholder="Select Course" />
@@ -68,7 +76,7 @@ const ListManagementView = ({ courses, lists, onSelectCourse, selectedCourse }) 
                 <TableCell>{list.duration}</TableCell>
                 <TableCell>{list.maxSlots}</TableCell>
                 <TableCell className="flex justify-end p-2">
-                  <Button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4">
+                  <Button type="submit" onClick={() => handleRemoveClick(list.id)} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4">
                     Remove List
                   </Button>
                 </TableCell>
@@ -77,15 +85,18 @@ const ListManagementView = ({ courses, lists, onSelectCourse, selectedCourse }) 
             <TableRow>
               <TableCell colSpan={2}></TableCell>
               <TableCell className="flex justify-end p-2">
-                <Button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4">
+              <Button 
+                type="button"
+                onClick={onAddListClick} 
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4">
                   Add List
-                </Button>
+              </Button>
               </TableCell>
             </TableRow>
           </TableBody>
         </Table>
       )}
-    </div>
+    </form>
   );
 };
 
