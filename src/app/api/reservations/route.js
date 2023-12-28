@@ -64,3 +64,103 @@ export async function POST(request) {
         });
     }
 }
+
+export async function GET(request) {
+  try {
+
+    const cookies = cookie.parse(request.headers.get('cookie') || '');
+    const token = cookies.authToken;
+
+    if (!token) {
+        throw new Error("No token provided");
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decoded.userId;
+
+    const reservationsQuery = await sql`
+    SELECT r.*, l.description, l.start, l.interval, l.location, c.title as course_title,
+    u.username as user_username, co.username as coop_username
+    FROM reservations r
+    JOIN lists l ON l.id = r.list_id
+    JOIN courses c ON l.course_id = c.id
+    LEFT JOIN users u ON r.user_id = u.id
+    LEFT JOIN users co ON r.coop_id = co.id
+    WHERE r.user_id = ${userId} OR r.coop_id = ${userId};
+    `;
+
+    return new Response(JSON.stringify(reservationsQuery.rows), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching reservations:", error);
+    return new Response(JSON.stringify({ error: "Internal server error" }), {
+      status: 500,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  }
+}
+
+export async function DELETE(request) {
+    try {
+        const url = new URL(request.url);
+        const reservationId = url.searchParams.get("reservationId");
+        const cookies = cookie.parse(request.headers.get('cookie') || '');
+        const token = cookies.authToken;
+
+        if (!token) {
+            throw new Error("Login to continue");
+        }
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const userId = decoded.userId;
+        // Check if the user is the booker of the reservation
+        const reservationQuery = await sql`
+            SELECT user_id FROM reservations WHERE id = ${reservationId};
+        `;
+
+        if (reservationQuery.rows.length === 0) {
+            throw new Error("Reservation not found.");
+        }
+
+        if (reservationQuery.rows[0].user_id !== userId) {
+            throw new Error("Cannot delete reservation: You are not the booker of this reservation.");
+        }
+
+        // Perform the deletion
+        const deleteResult = await sql`
+            DELETE FROM reservations WHERE id = ${reservationId};
+        `;
+
+        if (deleteResult.rowCount === 0) {
+            throw new Error("Failed to delete reservation.");
+        }
+
+        // Trigger Pusher event after successful deletion
+        pusher.trigger('reservation-channel', 'reservation-deleted', {
+            reservationId: reservationId
+        });
+
+        return new Response(JSON.stringify({ message: "Reservation deleted successfully" }), {
+            status: 200,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+    } catch (error) {
+        console.error('Error deleting reservation:', error);
+        return new Response(JSON.stringify({ error: error.message }), {
+            status: 500,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+    }
+}
+
+
