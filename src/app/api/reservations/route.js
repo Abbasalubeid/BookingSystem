@@ -119,19 +119,32 @@ export async function DELETE(request) {
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const userId = decoded.userId;
-
-        console.log(userId);
+        // Check if the user is the booker of the reservation
         const reservationQuery = await sql`
             SELECT user_id FROM reservations WHERE id = ${reservationId};
         `;
+
+        if (reservationQuery.rows.length === 0) {
+            throw new Error("Reservation not found.");
+        }
 
         if (reservationQuery.rows[0].user_id !== userId) {
             throw new Error("Cannot delete reservation: You are not the booker of this reservation.");
         }
 
-        await sql`
+        // Perform the deletion
+        const deleteResult = await sql`
             DELETE FROM reservations WHERE id = ${reservationId};
         `;
+
+        if (deleteResult.rowCount === 0) {
+            throw new Error("Failed to delete reservation.");
+        }
+
+        // Trigger Pusher event after successful deletion
+        pusher.trigger('reservation-channel', 'reservation-deleted', {
+            reservationId: reservationId
+        });
 
         return new Response(JSON.stringify({ message: "Reservation deleted successfully" }), {
             status: 200,

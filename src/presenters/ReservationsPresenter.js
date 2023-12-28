@@ -3,6 +3,7 @@ import ReservationsView from "@/views/ReservationsView";
 import ReservationDetailsDialogView from "@/views/ReservationDetailsDialogView";
 import DeleteDialogView from "@/views/DeleteDialogView";
 import Reservation from "@/models/Reservation";
+import Pusher from 'pusher-js';
 
 const ReservationsPresenter = ({}) => {
   const [reservationsDTO, setReservationsDTO] = useState([]);
@@ -17,6 +18,27 @@ const ReservationsPresenter = ({}) => {
   useEffect(() => {
     fetchReservations();
   }, []);
+
+  useEffect(() => {
+    fetchReservations();
+
+    const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY, {
+        cluster: 'eu'
+    });
+
+    const channel = pusher.subscribe('reservation-channel');
+    channel.bind('reservation-deleted', function(data) {
+        // Logic to handle delete event
+        fetchReservations(); // Option 1: Refetch data
+        // Or Option 2: Filter out the deleted reservation from the state
+    });
+
+    return () => {
+        channel.unbind_all();
+        channel.unsubscribe();
+        pusher.disconnect();
+    };
+}, []);
 
   const fetchReservations = async () => {
     try {
