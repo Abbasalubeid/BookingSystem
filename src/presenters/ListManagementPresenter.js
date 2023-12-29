@@ -113,9 +113,7 @@ const AdminListPresenter = ({}) => {
     return `${year}-${month}-${day} ${hours}:${minutes}:00`;
   }
 
-  const handleCreateList = async () => {
-    setIsBooking(true);
-  
+  const handleCreateList = async () => {  
     const newListData = {
       course_id: selectedCourse, 
       admin_id: null, 
@@ -125,8 +123,6 @@ const AdminListPresenter = ({}) => {
       interval: sessionLength,
       max_slots: totalSessions
     };
-
-    
   
     try {
       console.log(newListData);
@@ -144,8 +140,7 @@ const AdminListPresenter = ({}) => {
     } catch (error) {
       console.error('Error creating new list: ', error);
     }
-  
-    setIsBooking(false);
+
     setShowDialog(false);
   };
 
