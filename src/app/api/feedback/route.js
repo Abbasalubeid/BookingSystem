@@ -4,8 +4,7 @@ import cookie from 'cookie';
 
 export async function POST(request) {
   try {
-    const { newListData } = await request.json();
-
+    const { comment, rating, courseId } = await request.json();
     const cookies = cookie.parse(request.headers.get('cookie') || '');
     const token = cookies.authToken;
 
@@ -17,19 +16,16 @@ export async function POST(request) {
     const userId = decoded.userId;
 
     // Check if the List already exists
-    const existingList = await sql`
-        SELECT 1 FROM lists 
-        WHERE course_id = ${newListData.course_id}
-        AND admin_id = ${userId}
-        AND description = ${newListData.description}
-        AND location = ${newListData.location}
-        AND start = ${newListData.start}
-        AND interval = ${newListData.interval}
-        AND max_slots = ${newListData.max_slots};`;
+    const existingFeedback = await sql`
+        SELECT 1 FROM feedback 
+        WHERE user_id = ${userId}
+        AND course_id = ${courseId}
+        AND comment = ${comment}
+        AND rating = ${rating};`;
 
-    if (existingList.rowCount > 0) {
-        console.log("List already exists");
-      return new Response(JSON.stringify({ error: 'List already exists for this course' }), {
+    if (existingFeedback.rowCount > 0) {
+        console.log("Feedback already provided");
+      return new Response(JSON.stringify({ error: 'This exact feedback has already been provided for this course.' }), {
         status: 409,
         headers: {
           'Content-Type': 'application/json',
@@ -38,8 +34,8 @@ export async function POST(request) {
     }
 
     const { rows } = await sql`
-    INSERT INTO lists (course_id, admin_id, description, location, start, interval, max_slots) VALUES 
-    (${newListData.course_id}, ${userId}, ${newListData.description}, ${newListData.location},${newListData.start}, ${newListData.interval}, ${newListData.max_slots});`;
+    INSERT INTO feedback (user_id, course_id, comment, rating, time) VALUES 
+    (${userId}, ${courseId}, ${comment}, ${rating}, NOW());`;
 
 
     return new Response(JSON.stringify({ message: 'List added' }), {

@@ -3,19 +3,30 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Separator } from "@/components/ui/separator";
 import Link from 'next/link';
 
-const CoursesView = ({ courses = [] }) => {
+const CoursesView = ({ courses = [], onGiveFeedback, setCourseId }) => {
+  const onGiveFeedbackClick = (courseId) => {
+    setCourseId(courseId);
+    onGiveFeedback();
+  }
+  
   return (
     <div className="flex flex-col items-center justify-center p-4 w-full">
       <h1 className="text-3xl font-bold mb-5">Your Courses</h1>
       {courses.length > 0 ? courses.map(course => (
-        <Link className="mb-4 w-full md:max-w-xl transition duration-150 ease-in-out transform hover:shadow-lg hover:-translate-y-1" key={course.id} href={`/course/${course.id}`} passHref>
-            <Card key={course.id}>
-              <CardHeader>
-                <CardTitle>{course.title}</CardTitle>
-              </CardHeader>
-            </Card>
-        </Link>
-      )) : (
+        <div key={course.id} className="mb-4 w-full md:max-w-xl">
+          <div className="flex justify-between items-center bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-150 ease-in-out">
+            <Link href={`/course/${course.id}`} passHref>
+                <h2 className="text-xl font-semibold">{course.title}</h2>
+            </Link>
+            <button 
+              onClick={() => onGiveFeedbackClick(course.id)}
+              className="ml-4 py-2 px-4 bg-blue-500 hover:bg-blue-700 text-white font-bold rounded-lg transition-colors duration-150 ease-in-out">
+              Give Feedback
+            </button>
+          </div>
+        </div>
+      ))
+      : (
         <Card>
           <CardHeader>
             <CardTitle className="text-lg">No courses available</CardTitle>
@@ -25,6 +36,7 @@ const CoursesView = ({ courses = [] }) => {
       <Separator className="my-4" />
     </div>
   );
+  
 };
 
 export default CoursesView;
