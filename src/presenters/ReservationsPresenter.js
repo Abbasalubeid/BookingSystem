@@ -3,7 +3,7 @@ import ReservationsView from "@/views/ReservationsView";
 import ReservationDetailsDialogView from "@/views/ReservationDetailsDialogView";
 import DeleteDialogView from "@/views/DeleteDialogView";
 import Reservation from "@/models/Reservation";
-import Pusher from 'pusher-js';
+import Pusher from "pusher-js";
 
 const ReservationsPresenter = ({}) => {
   const [reservationsDTO, setReservationsDTO] = useState([]);
@@ -16,30 +16,35 @@ const ReservationsPresenter = ({}) => {
 
   useEffect(() => {
     fetchReservations();
-  }, []);
-
-  useEffect(() => {
-    fetchReservations();
 
     const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY, {
-        cluster: 'eu'
+      cluster: "eu",
     });
 
-    const channel = pusher.subscribe('reservation-channel');
-    channel.bind('reservation-deleted', function(data) {
-      const deletedReservationId = parseInt(data.reservationId, 10); 
+    const channel = pusher.subscribe("reservation-channel");
+    channel.bind("reservation-deleted", function (data) {
+      const deletedReservationId = parseInt(data.reservationId, 10);
 
       setReservationsDTO((prevReservations) =>
-        prevReservations.filter(reservation => reservation.id !== deletedReservationId)
+        prevReservations.filter(
+          (reservation) => reservation.id !== deletedReservationId
+        )
       );
     });
 
+    const bookingChannel = pusher.subscribe("booking-channel");
+
+    bookingChannel.bind("booking-event", () => {
+      fetchReservations();
+    });
+
+    // Clean up
     return () => {
-        channel.unbind_all();
-        channel.unsubscribe();
-        pusher.disconnect();
+      bookingChannel.unbind_all();
+      bookingChannel.unsubscribe();
+      pusher.disconnect();
     };
-}, []);
+  }, []);
 
   const fetchReservations = async () => {
     try {
