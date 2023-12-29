@@ -75,6 +75,7 @@ const ReservationsPresenter = ({}) => {
 
   const onDeleteClick = async (reservationId) => {
     setDeletingReservationId(reservationId);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     try {
       const response = await fetch(
         `/api/reservations?reservationId=${reservationId}`,
