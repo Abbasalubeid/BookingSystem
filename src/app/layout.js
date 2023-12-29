@@ -3,6 +3,7 @@ import './globals.css'
 import { ThemeProvider } from "@/components/ThemeProvider"
 import { ModeToggle } from '@/components/ModeToggle'
 import Navbar from '@/components/Navbar'
+import NavbarView from '@/views/NavbarView'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -17,7 +18,7 @@ export default function RootLayout({ children }) {
       <html lang="en" suppressHydrationWarning>
         <head />
         <body>
-          <Navbar></Navbar>
+          <NavbarView/>
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
