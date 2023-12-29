@@ -9,7 +9,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { BookmarkIcon, ClockIcon, PersonIcon, GlobeIcon  } from "@radix-ui/react-icons";
+import { BookmarkIcon, ClockIcon, PersonIcon, HomeIcon, ReaderIcon, AvatarIcon  } from "@radix-ui/react-icons";
 
 const ReservationDetailsDialogView = ({
   showDialog,
@@ -29,8 +29,12 @@ const ReservationDetailsDialogView = ({
           <p>Course: {reservationDetails.courseTitle}</p>
         </div>
         <div className="flex items-center">
-          <PersonIcon className="mr-2" />
+          <ReaderIcon className="mr-2" />
           <p>Description: {reservationDetails.description}</p>
+        </div>
+        <div className="flex items-center">
+          <HomeIcon className="mr-2" />
+          <p>Location: {reservationDetails.location}</p>
         </div>
         <div className="flex items-center">
           <ClockIcon className="mr-2" />
@@ -41,11 +45,7 @@ const ReservationDetailsDialogView = ({
           <p>End Time: {reservationDetails.endTime}</p>
         </div>
         <div className="flex items-center">
-          <GlobeIcon className="mr-2" />
-          <p>Location: {reservationDetails.location}</p>
-        </div>
-        <div className="flex items-center">
-          <PersonIcon className="mr-2" />
+          <AvatarIcon className="mr-2" />
           <p>Booker: {reservationDetails.userUsername}</p>
         </div>
         {reservationDetails.coopUsername && (
