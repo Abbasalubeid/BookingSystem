@@ -6,7 +6,7 @@ export function getDataFromToken(request) {
   const token = cookies.authToken;
 
   if (!token) {
-    throw new Error("No token provided");
+    throw new Error("Session is no longer valid. Log in to continue.");
   }
 
   return jwt.verify(token, process.env.JWT_SECRET);

@@ -8,7 +8,7 @@ export function middleware(request) {
     const token = cookies.authToken;
 
     if (!token) {
-      throw new Error("No token provided");
+      throw new Error("Log in to continue");
     }
 
   } catch (error) {
