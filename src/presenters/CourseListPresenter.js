@@ -26,14 +26,23 @@ const CourseListPresenter = ({ courseId }) => {
       cluster: 'eu'
     });
 
-    const channel = pusher.subscribe('booking-channel');
-    channel.bind('booking-event', function(data) {
+    const reservationsChannel = pusher.subscribe("reservation-channel");
+    reservationsChannel.bind("reservation-deleted", function () {
       fetchLists();
     });
 
+    const bookingChannel = pusher.subscribe("booking-channel");
+
+    bookingChannel.bind("booking-event", () => {
+      fetchLists();
+    });
+
+    // Clean up
     return () => {
-      channel.unbind_all();
-      channel.unsubscribe();
+      bookingChannel.unbind_all();
+      bookingChannel.unsubscribe();
+      reservationsChannel.unbind_all();
+      reservationsChannel.unsubscribe();
       pusher.disconnect();
     };
   }, []);
