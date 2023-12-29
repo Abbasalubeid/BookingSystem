@@ -42,17 +42,13 @@ export async function POST(request) {
     INSERT INTO lists (course_id, admin_id, description, location, start, interval, max_slots) VALUES 
     (${newListData.course_id}, ${userId}, ${newListData.description}, ${newListData.location},${newListData.start}, ${newListData.interval}, ${newListData.max_slots});`;
 
-    if (rows.length > 0) {
-      return new Response.json(rows[0]);
-    } else {
-        console.log("Unable to add list in route, response bad");
-      return new Response(JSON.stringify({ error: 'Uanble to add this list' }), {
-        status: 400,
+
+    return new Response(JSON.stringify({ message: 'List added' }), {
+        status: 200,
         headers: {
-          'Content-Type': 'application/json',
+            'Content-Type': 'application/json',
         },
-      });
-    }
+    });
   } catch (error) {
     console.error('Error adding list: route ', error);
     return new Response(JSON.stringify({ error: 'Internal server error' }), {
