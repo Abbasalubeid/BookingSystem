@@ -32,6 +32,8 @@ export default class Reservation {
   }
 
   formatTime(time) {
-    return time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const formattedDate = time.toLocaleDateString([], { year: 'numeric', month: '2-digit', day: '2-digit' });
+    const formattedTime = time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    return `${formattedDate}, ${formattedTime}`;
   }
 }
