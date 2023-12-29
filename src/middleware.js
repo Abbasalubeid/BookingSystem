@@ -8,11 +8,10 @@ export function middleware(request) {
     const token = cookies.authToken;
 
     if (!token) {
-      throw new Error("Log in to continue");
+      throw new Error("Session is no longer valid. Log in to continue.");
     }
 
   } catch (error) {
-    console.log(error);
     return NextResponse.redirect(new URL("/login", request.url));
   }
 }
