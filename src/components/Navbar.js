@@ -1,4 +1,3 @@
-"use client"
 import {
     NavigationMenu,
     NavigationMenuItem,
@@ -8,7 +7,7 @@ import {
 import { navigationMenuTriggerStyle } from "@/components/ui/navigation-menu"
 import Link from "next/link";
 
-const Navbar = () => {
+const Navbar = ({ onLogout }) => {
   return (
     <NavigationMenu className="p-3">
         <NavigationMenuList>
@@ -43,11 +42,9 @@ const Navbar = () => {
                 </NavigationMenuLink>
             </Link>
             
-            <Link href="/" legacyBehavior passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    Log out
-                </NavigationMenuLink>
-            </Link>
+            <button onClick={() => onLogout()} className={navigationMenuTriggerStyle()}>
+                Log out
+            </button>
             </NavigationMenuItem>
         </NavigationMenuList>
     </NavigationMenu>
