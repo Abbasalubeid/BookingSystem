@@ -9,6 +9,5 @@ export function getDataFromToken(request) {
     throw new Error("No token provided");
   }
 
-  const decoded = jwt.verify(token, process.env.JWT_SECRET);
-  return decoded.admin;
+  return jwt.verify(token, process.env.JWT_SECRET);
 }
