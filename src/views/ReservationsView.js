@@ -25,8 +25,7 @@ const ReservationsView = ({ reservations, error, onDetailsClick, onDeleteClick, 
         <TableRow>
           <TableHead>Course</TableHead>
           <TableHead>Description</TableHead>
-          <TableHead>Start Time</TableHead>
-          <TableHead>End Time</TableHead>
+          <TableHead>Start</TableHead>
           <TableHead></TableHead>
           <TableHead></TableHead>
         </TableRow>
@@ -37,7 +36,6 @@ const ReservationsView = ({ reservations, error, onDetailsClick, onDeleteClick, 
             <TableCell>{reservation.courseTitle}</TableCell>
             <TableCell>{reservation.description}</TableCell>
             <TableCell>{reservation.startTime}</TableCell>
-            <TableCell>{reservation.endTime}</TableCell>
             <TableCell>
               <Button onClick={() => onDetailsClick(reservation)} className="rounded-full p-2">
                 <ReaderIcon />
