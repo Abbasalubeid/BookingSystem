@@ -9,9 +9,8 @@ const ReservationsPresenter = ({}) => {
   const [reservationsDTO, setReservationsDTO] = useState([]);
   const [error, setError] = useState(null);
   const [showDetailsDialog, setShowDetailsDialog] = useState(false);
-  const [currentReservationDetails, setCurrentReservationDetails] =
-    useState(null);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [currentReservationDetails, setCurrentReservationDetails] = useState(null);
+  const [deletingReservationId, setDeletingReservationId] = useState(null);
   const [deleteConfirmation, setDeleteConfirmation] = useState("");
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
@@ -28,9 +27,11 @@ const ReservationsPresenter = ({}) => {
 
     const channel = pusher.subscribe('reservation-channel');
     channel.bind('reservation-deleted', function(data) {
-        // Logic to handle delete event
-        fetchReservations(); // Option 1: Refetch data
-        // Or Option 2: Filter out the deleted reservation from the state
+      const deletedReservationId = parseInt(data.reservationId, 10); 
+
+      setReservationsDTO((prevReservations) =>
+        prevReservations.filter(reservation => reservation.id !== deletedReservationId)
+      );
     });
 
     return () => {
@@ -68,7 +69,7 @@ const ReservationsPresenter = ({}) => {
   };
 
   const onDeleteClick = async (reservationId) => {
-    setIsDeleting(true);
+    setDeletingReservationId(reservationId);
     try {
       const response = await fetch(
         `/api/reservations?reservationId=${reservationId}`,
@@ -93,7 +94,7 @@ const ReservationsPresenter = ({}) => {
       setDeleteConfirmation(err.message);
       setShowDeleteDialog(true); // Show delete error dialog if deletion is not possible
     }
-    setIsDeleting(false);
+    setDeletingReservationId(null);
   };
 
   const onDetailsClick = (reservation) => {
@@ -119,7 +120,7 @@ const ReservationsPresenter = ({}) => {
         error={error}
         onDetailsClick={onDetailsClick}
         onDeleteClick={onDeleteClick}
-        isDeleting={isDeleting}
+        deletingReservationId={deletingReservationId}
       />
       <ReservationDetailsDialogView
         showDialog={showDetailsDialog}
