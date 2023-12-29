@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 
-const ReservationsView = ({ reservations, error, onDetailsClick, onDeleteClick, isDeleting }) => {
+const ReservationsView = ({ reservations, error, onDetailsClick, onDeleteClick, deletingReservationId }) => {
   if (error) {
     return <div>Error: {error}</div>;
   }
@@ -26,7 +26,7 @@ const ReservationsView = ({ reservations, error, onDetailsClick, onDeleteClick, 
           <TableHead>Description</TableHead>
           <TableHead>Start Time</TableHead>
           <TableHead>End Time</TableHead>
-          <TableHead>Location</TableHead>
+          {/* <TableHead>Location</TableHead> */}
           <TableHead></TableHead>
           <TableHead></TableHead>
         </TableRow>
@@ -38,14 +38,14 @@ const ReservationsView = ({ reservations, error, onDetailsClick, onDeleteClick, 
             <TableCell>{reservation.description}</TableCell>
             <TableCell>{reservation.startTime}</TableCell>
             <TableCell>{reservation.endTime}</TableCell>
-            <TableCell>{reservation.location}</TableCell>
+            {/* <TableCell>{reservation.location}</TableCell> */}
             <TableCell>
               <Button onClick={() => onDetailsClick(reservation)}>Details</Button>
             </TableCell>
             <TableCell>
-              {isDeleting ? 
+              {deletingReservationId === reservation.id ? 
                 <span>Deleting...</span> : 
-                <Button onClick={() => onDeleteClick(reservation.id)} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4">Delete</Button>
+                <Button onClick={() => onDeleteClick(reservation.id)} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 md:w-auto w-20">Delete</Button>
               }
             </TableCell>
           </TableRow>
