@@ -44,7 +44,7 @@ const ReservationDetailsDialogView = ({
         </div>
         <div className="flex items-center">
           <AvatarIcon className="mr-2" />
-          <p>Booker: {reservationDetails.userUsername}</p>
+          <p>Primary User: {reservationDetails.userUsername}</p>
         </div>
         {reservationDetails.coopUsername && (
           <div className="flex items-center">
