@@ -105,7 +105,7 @@ export async function DELETE(request) {
         }
 
         if (reservationQuery.rows[0].user_id !== userId) {
-            throw new Error("Cannot delete reservation: You are not the booker of this reservation.");
+            throw new Error("Cannot delete reservation: You are not the primary user of this reservation.");
         }
 
         // Perform the deletion
