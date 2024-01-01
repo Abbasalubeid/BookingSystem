@@ -4,9 +4,7 @@ const pusher = require('../pusherConfig');
 
 export async function POST(request) {
     try {
-        const {userId} = getDataFromToken(request);
-
-        const { listId, sequence, coopId } = await request.json();
+        const { userId, listId, sequence, coopId } = await request.json();
 
         // Begin transaction
         await sql`BEGIN`;
