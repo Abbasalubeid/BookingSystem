@@ -1,9 +1,7 @@
 "use client"
-import React from 'react';
 import SignupPresenter from '@/presenters/SignupPresenter';
+import withAdminAuth from '../../withAdminAuth';
 
-const LoginPage = () => {
-  return <SignupPresenter />;
-};
+ const AdminUserManagementPage = withAdminAuth(SignupPresenter);
 
-export default LoginPage;
+export default AdminUserManagementPage;
