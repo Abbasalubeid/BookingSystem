@@ -3,10 +3,11 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Separator } from "@/components/ui/separator";
 import Link from 'next/link';
 
-const CoursesView = ({ courses = [] }) => {
+const CoursesView = ({ courses = [], isAdmin }) => {
   return (
     <div className="flex flex-col items-center justify-center p-4 w-full">
-      <h1 className="text-3xl font-bold mb-5">Your Courses</h1>
+      {isAdmin ?<h1 className="text-3xl font-bold mb-5">All Courses</h1>    :   <h1 className="text-3xl font-bold mb-5">Your Courses</h1>}
+
       {courses.length > 0 ? courses.map(course => (
         <Link className="mb-4 w-full md:max-w-xl transition duration-150 ease-in-out transform hover:shadow-lg hover:-translate-y-1" key={course.id} href={`/course/${course.id}`} passHref>
             <Card key={course.id}>
