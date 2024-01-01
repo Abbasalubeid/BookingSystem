@@ -1,9 +1,7 @@
 "use client"
-import React from 'react';
 import CourseAccessPresenter from '@/presenters/CourseAccessPresenter';
+import withAdminAuth from '../withAdminAuth';
 
-const AccessControlPage = () => {
-  return <CourseAccessPresenter />
-};
+const CourseAccessPage = withAdminAuth(CourseAccessPresenter);
 
-export default AccessControlPage;
+export default CourseAccessPage;

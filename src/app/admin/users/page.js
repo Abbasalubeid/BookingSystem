@@ -1,8 +1,7 @@
-import React from 'react';
+"use client"
 import UserManagementPresenter from '@/presenters/UserManagementPresenter';
+import withAdminAuth from '../withAdminAuth';
 
-const UserManagementPage = () => {
-  return <UserManagementPresenter />;
-};
+const UserManagementPage = withAdminAuth(UserManagementPresenter)
 
 export default UserManagementPage;
