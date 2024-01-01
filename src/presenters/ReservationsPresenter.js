@@ -5,7 +5,7 @@ import DeleteDialogView from "@/views/DeleteDialogView";
 import Reservation from "@/models/Reservation";
 import Pusher from "pusher-js";
 
-const ReservationsPresenter = ({}) => {
+const ReservationsPresenter = ({ isAdmin }) => {
   const [reservationsDTO, setReservationsDTO] = useState([]);
   const [error, setError] = useState(null);
   const [showDetailsDialog, setShowDetailsDialog] = useState(false);
@@ -21,8 +21,8 @@ const ReservationsPresenter = ({}) => {
       cluster: "eu",
     });
 
-    const channel = pusher.subscribe("reservation-channel");
-    channel.bind("reservation-deleted", function (data) {
+    const reservationsChannel = pusher.subscribe("reservation-channel");
+    reservationsChannel.bind("reservation-deleted", function (data) {
       const deletedReservationId = parseInt(data.reservationId, 10);
 
       setReservationsDTO((prevReservations) =>
@@ -42,13 +42,16 @@ const ReservationsPresenter = ({}) => {
     return () => {
       bookingChannel.unbind_all();
       bookingChannel.unsubscribe();
+      reservationsChannel.unbind_all();
+      reservationsChannel.unsubscribe();
       pusher.disconnect();
     };
   }, []);
 
   const fetchReservations = async () => {
     try {
-      const response = await fetch(`/api/reservations`);
+      const endpoint = isAdmin ? `/api/reservations/all` : `/api/reservations`;
+      const response = await fetch(endpoint);
       if (!response.ok) {
         throw new Error("Failed to fetch reservations");
       }
@@ -77,8 +80,9 @@ const ReservationsPresenter = ({}) => {
     setDeletingReservationId(reservationId);
     await new Promise((resolve) => setTimeout(resolve, 1000));
     try {
+      const endpoint = isAdmin ? `/api/reservations/all?reservationId` : `/api/reservations?reservationId`;
       const response = await fetch(
-        `/api/reservations?reservationId=${reservationId}`,
+        `${endpoint}=${reservationId}`,
         {
           method: "DELETE",
           credentials: "include",
@@ -127,6 +131,7 @@ const ReservationsPresenter = ({}) => {
         onDetailsClick={onDetailsClick}
         onDeleteClick={onDeleteClick}
         deletingReservationId={deletingReservationId}
+        isAdmin={isAdmin}
       />
       <ReservationDetailsDialogView
         showDialog={showDetailsDialog}
