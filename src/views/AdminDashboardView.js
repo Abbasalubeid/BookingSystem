@@ -34,7 +34,14 @@ const AdminDashboardView = () => {
       <Link className="mb-4 w-80 md:max-w-xl transition duration-150 ease-in-out transform hover:shadow-lg hover:-translate-y-1" href="/admin/bookings" passHref>
         <Card>
           <CardHeader>
-            <CardTitle>Booking Management</CardTitle>
+            <CardTitle>All Bookings</CardTitle>
+          </CardHeader>
+        </Card>
+      </Link>
+      <Link className="mb-4 w-80 md:max-w-xl transition duration-150 ease-in-out transform hover:shadow-lg hover:-translate-y-1" href="/admin/createBookings" passHref>
+        <Card>
+          <CardHeader>
+            <CardTitle>Create Bookings</CardTitle>
           </CardHeader>
         </Card>
       </Link>

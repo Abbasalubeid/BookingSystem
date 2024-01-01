@@ -1,9 +1,7 @@
 "use client"
 import ListManagementPresenter from '@/presenters/ListManagementPresenter';
+import withAdminAuth from '../withAdminAuth';
 
-const CourseListPage = ({}) => {
-  
-  return <ListManagementPresenter/>
-};
+const CourseListPage = withAdminAuth(ListManagementPresenter)
 
 export default CourseListPage;

@@ -3,7 +3,7 @@ import CoursesView from '@/views/CoursesView';
 import Course from '../models/Course';
 import FeedbackDialogView from '@/views/feedbackDialogView';
 
-const CoursesPresenter = () => {
+const CoursesPresenter = ({ isAdmin }) => {
   const [courses, setCourses] = useState([]);
   const [comment, setComment] = useState(null);
   const [rating, setRating] = useState(null);
@@ -48,7 +48,12 @@ const CoursesPresenter = () => {
 
   const fetchCourses = async () => {
     try {
-      const response = await fetch('/api/courses', {
+
+      let url = '/api/courses';
+      if (isAdmin) {
+        url = `/api/admin/courses`;
+      }
+      const response = await fetch(url, {
         method: 'GET',
         credentials: 'include',
       });
@@ -74,7 +79,8 @@ const CoursesPresenter = () => {
     <CoursesView 
       courses={courses} 
       onGiveFeedback={handleGiveFeedback}
-      setCourseId={setCourseId} 
+      setCourseId={setCourseId}
+      isAdmin={isAdmin}
     />;
 
     <FeedbackDialogView

@@ -1,20 +1,10 @@
 import { sql } from "@vercel/postgres";
-import jwt from "jsonwebtoken";
-import cookie from 'cookie';
+import { getDataFromToken } from "../auth//authUtils";
 const pusher = require('../pusherConfig');
 
 export async function POST(request) {
     try {
-        const cookies = cookie.parse(request.headers.get('cookie') || '');
-        const token = cookies.authToken;
-
-        if (!token) {
-            throw new Error("No token provided");
-        }
-
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const userId = decoded.userId;
-        const { listId, sequence, coopId } = await request.json();
+        const { userId, listId, sequence, coopId } = await request.json();
 
         // Begin transaction
         await sql`BEGIN`;
@@ -68,15 +58,7 @@ export async function POST(request) {
 export async function GET(request) {
   try {
 
-    const cookies = cookie.parse(request.headers.get('cookie') || '');
-    const token = cookies.authToken;
-
-    if (!token) {
-        throw new Error("No token provided");
-    }
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const userId = decoded.userId;
+    const { userId } = getDataFromToken(request);
 
     const reservationsQuery = await sql`
     SELECT r.*, l.description, l.start, l.interval, l.location, c.title as course_title,
@@ -110,15 +92,9 @@ export async function DELETE(request) {
     try {
         const url = new URL(request.url);
         const reservationId = url.searchParams.get("reservationId");
-        const cookies = cookie.parse(request.headers.get('cookie') || '');
-        const token = cookies.authToken;
 
-        if (!token) {
-            throw new Error("Login to continue");
-        }
-
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const userId = decoded.userId;
+        const {userId} = getDataFromToken(request);
+        
         // Check if the user is the booker of the reservation
         const reservationQuery = await sql`
             SELECT user_id FROM reservations WHERE id = ${reservationId};
@@ -129,7 +105,7 @@ export async function DELETE(request) {
         }
 
         if (reservationQuery.rows[0].user_id !== userId) {
-            throw new Error("Cannot delete reservation: You are not the booker of this reservation.");
+            throw new Error("Cannot delete reservation: You are not the primary user of this reservation.");
         }
 
         // Perform the deletion

@@ -3,46 +3,55 @@ import ReservationsView from "@/views/ReservationsView";
 import ReservationDetailsDialogView from "@/views/ReservationDetailsDialogView";
 import DeleteDialogView from "@/views/DeleteDialogView";
 import Reservation from "@/models/Reservation";
-import Pusher from 'pusher-js';
+import Pusher from "pusher-js";
 
-const ReservationsPresenter = ({}) => {
+const ReservationsPresenter = ({ isAdmin }) => {
   const [reservationsDTO, setReservationsDTO] = useState([]);
   const [error, setError] = useState(null);
   const [showDetailsDialog, setShowDetailsDialog] = useState(false);
-  const [currentReservationDetails, setCurrentReservationDetails] =
-    useState(null);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [currentReservationDetails, setCurrentReservationDetails] = useState(null);
+  const [deletingReservationId, setDeletingReservationId] = useState(null);
   const [deleteConfirmation, setDeleteConfirmation] = useState("");
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   useEffect(() => {
     fetchReservations();
-  }, []);
-
-  useEffect(() => {
-    fetchReservations();
 
     const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY, {
-        cluster: 'eu'
+      cluster: "eu",
     });
 
-    const channel = pusher.subscribe('reservation-channel');
-    channel.bind('reservation-deleted', function(data) {
-        // Logic to handle delete event
-        fetchReservations(); // Option 1: Refetch data
-        // Or Option 2: Filter out the deleted reservation from the state
+    const reservationsChannel = pusher.subscribe("reservation-channel");
+    reservationsChannel.bind("reservation-deleted", function (data) {
+      const deletedReservationId = parseInt(data.reservationId, 10);
+
+      setReservationsDTO((prevReservations) =>
+        prevReservations.filter(
+          (reservation) => reservation.id !== deletedReservationId
+        )
+      );
     });
 
+    const bookingChannel = pusher.subscribe("booking-channel");
+
+    bookingChannel.bind("booking-event", () => {
+      fetchReservations();
+    });
+
+    // Clean up
     return () => {
-        channel.unbind_all();
-        channel.unsubscribe();
-        pusher.disconnect();
+      bookingChannel.unbind_all();
+      bookingChannel.unsubscribe();
+      reservationsChannel.unbind_all();
+      reservationsChannel.unsubscribe();
+      pusher.disconnect();
     };
-}, []);
+  }, []);
 
   const fetchReservations = async () => {
     try {
-      const response = await fetch(`/api/reservations`);
+      const endpoint = isAdmin ? `/api/reservations/all` : `/api/reservations`;
+      const response = await fetch(endpoint);
       if (!response.ok) {
         throw new Error("Failed to fetch reservations");
       }
@@ -68,10 +77,12 @@ const ReservationsPresenter = ({}) => {
   };
 
   const onDeleteClick = async (reservationId) => {
-    setIsDeleting(true);
+    setDeletingReservationId(reservationId);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     try {
+      const endpoint = isAdmin ? `/api/reservations/all?reservationId` : `/api/reservations?reservationId`;
       const response = await fetch(
-        `/api/reservations?reservationId=${reservationId}`,
+        `${endpoint}=${reservationId}`,
         {
           method: "DELETE",
           credentials: "include",
@@ -93,7 +104,7 @@ const ReservationsPresenter = ({}) => {
       setDeleteConfirmation(err.message);
       setShowDeleteDialog(true); // Show delete error dialog if deletion is not possible
     }
-    setIsDeleting(false);
+    setDeletingReservationId(null);
   };
 
   const onDetailsClick = (reservation) => {
@@ -119,7 +130,8 @@ const ReservationsPresenter = ({}) => {
         error={error}
         onDetailsClick={onDetailsClick}
         onDeleteClick={onDeleteClick}
-        isDeleting={isDeleting}
+        deletingReservationId={deletingReservationId}
+        isAdmin={isAdmin}
       />
       <ReservationDetailsDialogView
         showDialog={showDetailsDialog}
