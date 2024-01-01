@@ -14,6 +14,7 @@ const AdminDashboardView = () => {
           </CardHeader>
         </Card>
       </Link>
+
       <Link className="mb-4 w-80 md:max-w-xl transition duration-150 ease-in-out transform hover:shadow-lg hover:-translate-y-1" href="/admin/courseAccessManagement" passHref>
         <Card>
           <CardHeader>
@@ -21,6 +22,7 @@ const AdminDashboardView = () => {
           </CardHeader>
         </Card>
       </Link>
+
       <Link className="mb-4 w-80 md:max-w-xl transition duration-150 ease-in-out transform hover:shadow-lg hover:-translate-y-1" href="/admin/lists" passHref>
         <Card>
           <CardHeader>
@@ -28,6 +30,7 @@ const AdminDashboardView = () => {
           </CardHeader>
         </Card>
       </Link>
+
       <Link className="mb-4 w-80 md:max-w-xl transition duration-150 ease-in-out transform hover:shadow-lg hover:-translate-y-1" href="/admin/bookings" passHref>
         <Card>
           <CardHeader>
@@ -39,6 +42,14 @@ const AdminDashboardView = () => {
         <Card>
           <CardHeader>
             <CardTitle>Create Bookings</CardTitle>
+          </CardHeader>
+        </Card>
+      </Link>
+
+      <Link className="mb-4 w-80 md:max-w-xl transition duration-150 ease-in-out transform hover:shadow-lg hover:-translate-y-1" href="/admin/feedback" passHref>
+        <Card>
+          <CardHeader>
+            <CardTitle>Course Feedback</CardTitle>
           </CardHeader>
         </Card>
       </Link>

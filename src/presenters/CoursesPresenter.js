@@ -1,9 +1,46 @@
 import React, { useState, useEffect } from 'react';
 import CoursesView from '@/views/CoursesView';
 import Course from '../models/Course';
+import FeedbackDialogView from '@/views/feedbackDialogView';
 
 const CoursesPresenter = ({ isAdmin }) => {
   const [courses, setCourses] = useState([]);
+  const [comment, setComment] = useState(null);
+  const [rating, setRating] = useState(null);
+  const [showDialog, setShowDialog] = useState(false);
+  const [courseId, setCourseId] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleCloseDialog = () => {
+    setShowDialog(false);
+  };
+
+  const handleSubmitFeedback = async () => {  
+    setIsSubmitting(true);
+    try {
+      
+      const response = await fetch('/api/feedback', {
+        method: 'POST',
+        credentials: 'include', 
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({comment, rating, courseId})
+      });
+  
+      if (response.ok) {
+        console.log("Feedback submitted, presenter.");
+      } else {
+      }
+    } catch (error) {
+      console.error('Error submitting feedback: ', error);
+    } 
+
+    setShowDialog(false);
+    setIsSubmitting(false);
+  };
+
+  const handleGiveFeedback = () => {
+    setShowDialog(true);
+  } 
 
   useEffect(() => {
     fetchCourses();
@@ -18,7 +55,7 @@ const CoursesPresenter = ({ isAdmin }) => {
       }
       const response = await fetch(url, {
         method: 'GET',
-        credentials: 'include', // Necessary to include the cookie with the request
+        credentials: 'include',
       });
       if (response.ok) {
         const data = await response.json();
@@ -38,7 +75,23 @@ const CoursesPresenter = ({ isAdmin }) => {
     }
   };
 
-  return <CoursesView courses={courses} isAdmin={isAdmin} />;
+  return <>
+    <CoursesView 
+      courses={courses} 
+      onGiveFeedback={handleGiveFeedback}
+      setCourseId={setCourseId}
+      isAdmin={isAdmin}
+    />;
+
+    <FeedbackDialogView
+      showDialog={showDialog}
+      onCloseDialog={handleCloseDialog}
+      setComment={setComment}
+      setRating={setRating}
+      onSubmitFeedback={handleSubmitFeedback}
+      isSubmitting={isSubmitting}
+    />
+  </>
 };
 
 export default CoursesPresenter;

@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
-const ReservationDialogView = ({
+const CreateListDialogView = ({
   showDialog,
   onCloseDialog,
   onCreateList,
@@ -78,4 +78,4 @@ const ReservationDialogView = ({
   );
 };
 
-export default ReservationDialogView;
+export default CreateListDialogView;
