@@ -2,6 +2,6 @@
 import ReservationsPresenter from '@/presenters/ReservationsPresenter';
 import withAdminAuth from '../withAdminAuth';
 
-const AdminReservationsPresenter = withAdminAuth(ReservationsPresenter);
+const AdminReservationsPage = withAdminAuth(ReservationsPresenter);
 
-export default AdminReservationsPresenter;
+export default AdminReservationsPage;
