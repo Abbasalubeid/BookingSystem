@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Suspense } from "react";
+import React, { useState, useEffect} from "react";
 import List from "@/models/List";
 import CourseListView from "@/views/CourseListView";
 import ReservationDialogView from "@/views/ReservationDialogView";
@@ -16,6 +16,7 @@ const CourseListPresenter = ({ courseId, isAdmin }) => {
   const [bookingConfirmation, setBookingConfirmation] = useState(null);
   const [teammateUsername, setTeammateUsername] = useState("");
   const [teammateError, setTeammateError] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   // Admin specific states
   const [userOne, setUserOne] = useState("");
@@ -23,6 +24,7 @@ const CourseListPresenter = ({ courseId, isAdmin }) => {
   const [adminBookingError, setAdminBookingError] = useState("");
 
   useEffect(() => {
+    setIsLoading(true); 
     fetchLists();
   }, [courseId]);
 
@@ -119,10 +121,12 @@ const CourseListPresenter = ({ courseId, isAdmin }) => {
 
         setlistDTOs(newProcessedData);
         setListModelsMap(newModelsMap);
+        setIsLoading(false); 
       } else {
         setError("Failed to load course lists");
       }
     } catch (error) {
+      setIsLoading(false);
       setError(error.message);
     }
   };
@@ -359,6 +363,10 @@ const CourseListPresenter = ({ courseId, isAdmin }) => {
     setAdminBookingError("");
   };
 
+  if (isLoading) {
+    return null;
+  }
+
   return (
     <>
       <CourseListView
@@ -367,6 +375,7 @@ const CourseListPresenter = ({ courseId, isAdmin }) => {
         onBadgeClick={handleBadgeClick}
         loadingListId={loadingListId}
         nextAvailableTime={nextAvailableTime}
+        isAdmin={isAdmin}
       />
       <ReservationDialogView
         showDialog={showDialog}
