@@ -8,15 +8,28 @@ import {
   TableHead,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { ReaderIcon, TrashIcon, ReloadIcon } from "@radix-ui/react-icons";
+import { ReaderIcon, TrashIcon, ReloadIcon, ExclamationTriangleIcon} from "@radix-ui/react-icons";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 const ReservationsView = ({ reservations, error, onDetailsClick, onDeleteClick, deletingReservationId }) => {
+
   if (error) {
-    return <div>Error: {error}</div>;
+    return (
+      <Alert variant="destructive">
+        <ExclamationTriangleIcon className="h-4 w-4" />
+        <AlertTitle>Error</AlertTitle>
+        <AlertDescription>{error}</AlertDescription>
+      </Alert>
+    );
   }
 
   if (reservations.length === 0) {
-    return <div>No reservations found.</div>;
+    return (
+      <Alert >
+        <ExclamationTriangleIcon className="h-4 w-4" />
+        <AlertTitle>You have no reservations!</AlertTitle>
+      </Alert>
+    );
   }
 
   return (

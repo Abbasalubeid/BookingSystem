@@ -13,6 +13,7 @@ const ReservationsPresenter = ({ isAdmin }) => {
   const [deletingReservationId, setDeletingReservationId] = useState(null);
   const [deleteConfirmation, setDeleteConfirmation] = useState("");
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     fetchReservations();
@@ -50,6 +51,7 @@ const ReservationsPresenter = ({ isAdmin }) => {
 
   const fetchReservations = async () => {
     try {
+      setIsLoading(true);
       const endpoint = isAdmin ? `/api/reservations/all` : `/api/reservations`;
       const response = await fetch(endpoint);
       if (!response.ok) {
@@ -71,8 +73,10 @@ const ReservationsPresenter = ({ isAdmin }) => {
           };
         })
       );
+      setIsLoading(false);
     } catch (err) {
       setError(err.message);
+      setIsLoading(false);
     }
   };
 
@@ -122,6 +126,10 @@ const ReservationsPresenter = ({ isAdmin }) => {
     setShowDeleteDialog(false);
     setDeleteConfirmation("");
   };
+
+  if (isLoading) {
+    return null;
+  }
 
   return (
     <>

@@ -22,6 +22,7 @@ const CourseListView = ({
   error,
   onBadgeClick,
   loadingListId,
+  isAdmin
 }) => {
   if (error) {
     return (
@@ -41,10 +42,10 @@ const CourseListView = ({
           <AlertTitle>No Lists Available</AlertTitle>
           <AlertDescription>This course has no lists yet.</AlertDescription>
         </Alert>
-        <Link href="/courses">
+        <Link href={isAdmin ? "/admin" : "/courses"}>
           <Button variant="destructive" className="mt-4">
             <ArrowLeftIcon />
-            Back to Courses
+            Back
           </Button>
         </Link>
       </div>
