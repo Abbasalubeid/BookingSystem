@@ -12,11 +12,11 @@ const Navbar = ({ onLogout }) => {
     <NavigationMenu className="p-3">
         <NavigationMenuList>
             <NavigationMenuItem>
-            <Link href="/" legacyBehavior passHref>
+            {/* <Link href="/" legacyBehavior passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                     Home
                 </NavigationMenuLink>
-            </Link>
+            </Link> */}
 
             <Link href="/courses" legacyBehavior passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
