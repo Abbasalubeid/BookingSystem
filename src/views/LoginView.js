@@ -10,18 +10,20 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { useRouter } from 'next/navigation'
+import { useRouter } from "next/navigation";
 
-const LoginView = ({ onLogin, isLoginSuccess }) => {
+const LoginView = ({ onLogin, isLoginSuccess, isAdmin, isLoading, loginError }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
 
   useEffect(() => {
     if (isLoginSuccess) {
-      router.push('/courses');
+      const redirectUrl = isAdmin ? "/admin" : "/courses";
+      window.location.reload();
+      router.push(redirectUrl);
     }
-  }, [isLoginSuccess, router]);
+  }, [isLoginSuccess, isAdmin, router]);
 
   const handleFormSubmit = (event) => {
     event.preventDefault();
@@ -59,10 +61,13 @@ const LoginView = ({ onLogin, isLoginSuccess }) => {
             </div>
           </CardContent>
           <CardFooter>
-          <Button type="submit" className="w-full">
-              Log in
-            </Button> 
+          {!isLoginSuccess &&  (
+              <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading ? 'Logging in...' : 'Log in'}
+              </Button>
+            )}
             {isLoginSuccess && <p className="text-green-500">Login successful!</p>}
+            {loginError && <p className="text-red-500">{loginError}</p>}
           </CardFooter>
         </form>
       </Card>

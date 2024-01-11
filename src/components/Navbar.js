@@ -7,7 +7,7 @@ import {
 import { navigationMenuTriggerStyle } from "@/components/ui/navigation-menu"
 import Link from "next/link";
 
-const Navbar = ({ onLogout }) => {
+const Navbar = ({ onLogout, isAdmin }) => {
   return (
     <NavigationMenu className="p-3">
         <NavigationMenuList>
@@ -17,24 +17,29 @@ const Navbar = ({ onLogout }) => {
                     Home
                 </NavigationMenuLink>
             </Link> */}
-
+            {!isAdmin &&
             <Link href="/courses" legacyBehavior passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                     Courses
                 </NavigationMenuLink>
             </Link>
+            }
 
+            {!isAdmin &&
             <Link href="/reservations" legacyBehavior passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                     My Reservations
                 </NavigationMenuLink>
             </Link>
+            }
 
+            {isAdmin &&
             <Link href="/admin" legacyBehavior passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                     Admin
                 </NavigationMenuLink>
             </Link>
+            }
 
             <Link href="/login" legacyBehavior passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
