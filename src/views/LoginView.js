@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from 'next/navigation'
 
 const LoginView = ({ onLogin, isLoginSuccess }) => {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
 
@@ -25,7 +25,7 @@ const LoginView = ({ onLogin, isLoginSuccess }) => {
 
   const handleFormSubmit = (event) => {
     event.preventDefault();
-    onLogin(email, password);
+    onLogin(username, password);
   };
 
   return (
@@ -34,19 +34,18 @@ const LoginView = ({ onLogin, isLoginSuccess }) => {
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl">Log in</CardTitle>
           <CardDescription>
-            Enter your email and password to login
+            Enter your username and password to login
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleFormSubmit}>
           <CardContent className="grid gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="username">Username</Label>
               <Input
-                id="email"
-                // type="email"
-                placeholder="johnDoe@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                id="username"
+                placeholder="john_doe"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
               />
             </div>
             <div className="grid gap-2">

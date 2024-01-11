@@ -12,12 +12,12 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
 const SignupView = ({ onSignup }) => {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const handleFormSubmit = (event) => {
     event.preventDefault();
-    onSignup(email, password);
+    onSignup(username, password);
   };
 
   return (
@@ -26,19 +26,19 @@ const SignupView = ({ onSignup }) => {
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl">Create a new account</CardTitle>
           <CardDescription>
-            Enter your email and password to signup
+            Enter your username and password to signup
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleFormSubmit}>
           <CardContent className="grid gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="username">Username</Label>
               <Input
-                id="email"
-                // type="email"
-                placeholder="johnDoe@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                id="username"
+                placeholder="john_Doe"
+                value={username}
+                onChange={(e) => setUsername
+              (e.target.value)}
               />
             </div>
             <div className="grid gap-2">
