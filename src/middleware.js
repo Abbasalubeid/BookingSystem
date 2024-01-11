@@ -17,5 +17,5 @@ export function middleware(request) {
 }
 
 export const config = {
-    matcher: ["/api", "/reservations/:path*", "/courses/:path*", "/course/:path*", "/admin/:path*"]
+    matcher: ["/api", "/reservations/:path*", "/courses/:path*", "/course/:path*", "/admin/:path*", "/"]
 };
