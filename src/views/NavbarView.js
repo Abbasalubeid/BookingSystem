@@ -1,9 +1,9 @@
 import React from 'react';
 import Navbar from '@/components/Navbar';
 
-const NavbarView = ({ onLogout }) => {
+const NavbarView = ({ onLogout, isAdmin }) => {
     return (
-        <Navbar onLogout={onLogout}/>
+        <Navbar onLogout={onLogout} isAdmin={isAdmin}/>
     
       );
 };
