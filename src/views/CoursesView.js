@@ -15,7 +15,7 @@ const CoursesView = ({ courses = [], onGiveFeedback, setCourseId, isAdmin  }) =>
 
       {courses.length > 0 ? courses.map(course => (
         <div key={course.id} className="mb-4 w-full md:max-w-xl">
-          <div className="flex justify-between items-center bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-150 ease-in-out">
+          <div className="flex justify-between items-center p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-150 ease-in-out">
           <Link href={isAdmin ? `/admin/course/${course.id}` : `/course/${course.id}`} passHref>
                 <h2 className="text-xl font-semibold">{course.title}</h2>
             </Link>
