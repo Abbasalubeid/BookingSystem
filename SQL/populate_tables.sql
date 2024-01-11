@@ -1,13 +1,3 @@
--- Insert dummy data into 'users'
-INSERT INTO users (username, password, admin) VALUES 
-('john_doe', 'password123', 0),
-('jane_smith', 'password123', 0),
-('admin_user', 'adminpass', 1),
-('alice_walker', 'password123', 0),
-('bob_jones', 'password123', 0),
-('carol_smith', 'password123', 0),
-('david_brown', 'password123', 0),
-('emma_johnson', 'password123', 0);
 
 -- Insert dummy data into 'courses'
 INSERT INTO courses (title) VALUES 
