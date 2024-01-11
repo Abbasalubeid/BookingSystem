@@ -1,4 +1,5 @@
 import { sql } from '@vercel/postgres';
+import bcrypt from 'bcrypt';
 import { NextResponse } from 'next/server';
 
 // This API route handles the POST request to create a new user.
@@ -21,9 +22,10 @@ export async function POST(request) {
       });
     }
 
-    // Insert new user into the database
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     const { rows } = await sql`
-      INSERT INTO users (username, password, admin) VALUES (${username}, ${password}, ${0}) RETURNING id, username, admin
+      INSERT INTO users (username, password, admin) VALUES (${username}, ${hashedPassword}, ${0}) RETURNING id, username, admin
     `;
 
     if (rows.length > 0) {
