@@ -36,7 +36,7 @@ const Navbar = ({ onLogout, isAdmin }) => {
             {isAdmin &&
             <Link href="/admin" legacyBehavior passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    Admin
+                    Dashboard
                 </NavigationMenuLink>
             </Link>
             }
